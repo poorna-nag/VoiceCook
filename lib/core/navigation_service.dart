@@ -6,6 +6,9 @@ import 'package:voicecook/feature/home/presentation/pages/home_screen.dart';
 import 'package:voicecook/feature/recipe_detals/presentation/recipe_home_screen.dart';
 import 'package:voicecook/feature/recipe_detals/presentation/recipe_detail_screen.dart';
 import 'package:voicecook/feature/home/presentation/splash_screen.dart';
+import 'package:voicecook/feature/user_profile/presentation/add_food_screen.dart';
+import 'package:voicecook/feature/user_profile/presentation/profile_edit_screen.dart';
+import 'package:voicecook/feature/user_profile/presentation/user_profile_screen.dart';
 
 class NavigationService {
   static final NavigationService _instance = NavigationService._internal();
@@ -97,6 +100,21 @@ class NavigationService {
           builder: (_) => RecipeDetailScreen(recipe: recipes ?? []),
           settings: settings,
         );
+      case AppRoutes.profile:
+        return MaterialPageRoute(
+          builder: (context) => UserProfileScreen(),
+          settings: settings,
+        );
+      case AppRoutes.editprofile:
+        return MaterialPageRoute(
+          builder: (context) => ProfileEditScreen(),
+          settings: settings,
+        );
+      case AppRoutes.addInfo:
+        return MaterialPageRoute(
+          builder: (context) => AddFoodScreen(),
+          settings: settings,
+        );
 
       default:
         return MaterialPageRoute(
@@ -116,4 +134,7 @@ class AppRoutes {
   static const String details = "/details";
   static const String categoryList = "/categoryList";
   static const String search = "/search";
+  static const String profile = "/profile";
+  static const String addInfo = "/instraction";
+  static const String editprofile = "/editprofile";
 }

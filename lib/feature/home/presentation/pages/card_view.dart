@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
@@ -13,7 +14,6 @@ class CardView extends StatefulWidget {
 }
 
 class _CardViewState extends State<CardView> {
-  final List<RecipeModel> favItems = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +32,8 @@ class _CardViewState extends State<CardView> {
                 itemCount: widget.recipes.length,
                 itemBuilder: (context, index) {
                   final item = widget.recipes[index];
+                  final bool isFav = item.isFavorite;
+
                   return GestureDetector(
                     onTap: () {
                       context.read<HomeBloc>().add(
@@ -61,9 +63,10 @@ class _CardViewState extends State<CardView> {
                                 top: 8,
                                 right: 8,
                                 child: IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.favorite,
-                                    color: Colors.white,
+                                    color: isFav ? Colors.white : Colors.red,
+
                                     size: 28,
                                   ),
                                   onPressed: () {

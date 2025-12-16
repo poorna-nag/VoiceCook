@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/category/presentation/category_screen.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/data/repo/recipe_repo_impl.dart';
@@ -18,13 +19,28 @@ class HomeScreen extends StatelessWidget {
       create: (context) => HomeBloc(RecipeRepoImpl())..add(GetRecipeEvent()),
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            color: Colors.white,
+            onPressed: () {
+              NavigationService.pop();
+            },
+            icon: Icon(Icons.arrow_back_ios_new_sharp),
+          ),
           title: Text("VoiceCook", style: TextStyle(color: Colors.white)),
           backgroundColor: const Color(0xFF1B3A2E),
           centerTitle: false,
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                context.read<HomeBloc>().add(NavToFavScreenEvent());
+              },
               icon: Icon(Icons.favorite, color: Colors.white),
+            ),
+            IconButton(
+              onPressed: () {
+                context.read<HomeBloc>().add(NavToProfileEvent());
+              },
+              icon: Icon(Icons.person, color: Colors.white),
             ),
           ],
         ),
@@ -82,7 +98,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             onChanged: (value) {
               if (value.isEmpty) {
-                context.read<HomeBloc>().add(GetRecipeEvent()); // reset list
+                context.read<HomeBloc>().add(GetRecipeEvent());
               } else {
                 context.read<HomeBloc>().add(SearchRecipeEvent(value));
               }

@@ -23,6 +23,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<NavToFavScreenEvent>(_onNavToFavScreen);
     on<SearchRecipeEvent>(_onSearchRecipeEvent);
     on<FetchSavedRecipesEvent>(_onFetchSavedRecipesEvent);
+    on<NavToProfileEvent>(_onNavToProfileEvent);
+    on<DeleteFavEvent>(_onDeleteFavEvent);
   }
 
   Future<void> _onGetRecipeEvent(
@@ -32,6 +34,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoadingState());
     try {
       final recipes = await _repo.getRecipe();
+
+      allRecipes = recipes;
       emit(HomeLoadedState(recipe: recipes));
     } catch (e) {
       emit(HomeErrorState(error: e.toString()));
@@ -74,10 +78,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final prefs = await SharedPreferences.getInstance();
       final savedList = prefs.getStringList(_savedKey) ?? [];
 
-      // convert recipe to json
       final recipeJson = jsonEncode(event.recipe.toJson());
 
-      // toggle save/remove
       if (savedList.any((r) => jsonDecode(r)['id'] == event.recipe.id)) {
         savedList.removeWhere((r) => jsonDecode(r)['id'] == event.recipe.id);
       } else {
@@ -85,12 +87,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       await prefs.setStringList(_savedKey, savedList);
-
-      // Optionally, emit updated list of saved recipes
-      final savedRecipes = savedList
-          .map((e) => RecipeModel.fromJson(jsonDecode(e)))
-          .toList();
-      emit(HomeLoadedState(recipe: savedRecipes));
     } catch (e) {
       emit(HomeErrorState(error: e.toString()));
     }
@@ -99,11 +95,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   FutureOr<void> _onNavToFavScreen(
     NavToFavScreenEvent event,
     Emitter<HomeState> emit,
-  ) {
-    NavigationService.pushNamed(
-      routeName: AppRoutes.fav,
-      arguments: {'recipes': _repo},
-    );
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedList = prefs.getStringList(_savedKey) ?? [];
+      final savedRecipes = savedList
+          .map((e) => RecipeModel.fromJson(jsonDecode(e)))
+          .toList();
+      NavigationService.pushNamed(
+        routeName: AppRoutes.fav,
+        arguments: {'favItems': savedRecipes},
+      );
+    } catch (e) {
+      emit(HomeErrorState(error: e.toString()));
+    }
   }
 
   // FutureOr<void> _onNavToSearchEvent(
@@ -117,32 +122,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     SearchRecipeEvent event,
     Emitter<HomeState> emit,
   ) {
-    final filtered = allRecipes
-        .where(
-          (r) => r.name
-              .toLowerCase()
-              .split('')
-              .contains(event.query.toLowerCase()),
-        )
-        .toList();
+    final q = event.query.trim().toLowerCase();
+    final filtered = allRecipes.where((r) {
+      final inName = r.name.toLowerCase().contains(q);
+      final inDesc = r.description.toLowerCase().contains(q);
+      return inName || inDesc;
+    }).toList();
 
     if (filtered.isEmpty) {
-      emit(HomeLoadedState(recipe: filtered));
-    } else {
       emit(HomeErrorState(error: "No item found"));
+    } else {
+      emit(HomeLoadedState(recipe: filtered));
     }
   }
 
-  FutureOr<void> _onFetchSavedRecipesEvent(FetchSavedRecipesEvent event, Emitter<HomeState> emit)  async{
+  FutureOr<void> _onFetchSavedRecipesEvent(
+    FetchSavedRecipesEvent event,
+    Emitter<HomeState> emit,
+  ) async {
     try {
-        final prefs = await SharedPreferences.getInstance();
-        final savedList = prefs.getStringList(_savedKey) ?? [];
-        final savedRecipes = savedList
-            .map((e) => RecipeModel.fromJson(jsonDecode(e)))
-            .toList();
-        emit(HomeLoadedState(recipe: savedRecipes));
-      } catch (e) {
-        emit(HomeErrorState(error: e.toString()));
-      }
+      final prefs = await SharedPreferences.getInstance();
+      final savedList = prefs.getStringList(_savedKey) ?? [];
+      final savedRecipes = savedList
+          .map((e) => RecipeModel.fromJson(jsonDecode(e)))
+          .toList();
+      emit(FavoriteLoadedState(recipes: savedRecipes));
+    } catch (e) {
+      emit(HomeErrorState(error: e.toString()));
+    }
   }
+
+  FutureOr<void> _onNavToProfileEvent(
+    NavToProfileEvent event,
+    Emitter<HomeState> emit,
+  ) {
+    NavigationService.pushNamed(routeName: AppRoutes.profile);
+  }
+
+  FutureOr<void> _onDeleteFavEvent(
+    DeleteFavEvent event,
+    Emitter<HomeState> emit,
+  ) {}
 }

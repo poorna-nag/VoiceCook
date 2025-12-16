@@ -38,3 +38,9 @@ class FetchSavedRecipesEvent extends HomeEvent {}
 class NavToFavScreenEvent extends HomeEvent {}
 
 class NavToSearchEvent extends HomeEvent {}
+
+class DeleteFavEvent extends HomeEvent {}
+
+class NavToProfileEvent extends HomeEvent {}
+
+class DeleteFavItemEvent extends HomeEvent {}
