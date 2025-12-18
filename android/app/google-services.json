@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "137054042464",
+    "project_id": "voice-cook-ea47c",
+    "storage_bucket": "voice-cook-ea47c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137054042464:android:8e6d74f4c13984ca9e8605",
+        "android_client_info": {
+          "package_name": "com.example.voicecook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHHWpXHOEVQlem6J5Ng9baHoQPXteKZbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

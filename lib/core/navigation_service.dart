@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:voicecook/feature/auth/presentation/login_screen.dart';
+import 'package:voicecook/feature/auth/presentation/singin_screen.dart';
 import 'package:voicecook/feature/category/presentation/categoty_item_list_screen.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/presentation/pages/fav_screen.dart';
@@ -115,6 +117,16 @@ class NavigationService {
           builder: (context) => AddFoodScreen(),
           settings: settings,
         );
+      case AppRoutes.signin:
+        return MaterialPageRoute(
+          builder: (context) => SingInScreen(),
+          settings: settings,
+        );
+      case AppRoutes.login:
+        return MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+          settings: settings,
+        );
 
       default:
         return MaterialPageRoute(
@@ -137,4 +149,6 @@ class AppRoutes {
   static const String profile = "/profile";
   static const String addInfo = "/instraction";
   static const String editprofile = "/editprofile";
+  static const String signin = '/signin';
+  static const String login = '/login';
 }

@@ -13,7 +13,7 @@ class UserProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
+      appBar: AppBar(title: Text("Profile"), centerTitle: false),
       body: BlocProvider(
         create: (context) => UserBloc()..add(GetUserEvent()),
         child: BlocBuilder<UserBloc, UserState>(
@@ -83,24 +83,32 @@ class _UserProfileState extends State<UserProfile> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(2.0),
-                            child: Text(
-                              data.name,
-                              style: GoogleFonts.aBeeZee(fontSize: 44),
+                            child: Expanded(
+                              child: Text(
+                                data.name,
+                                style: GoogleFonts.aBeeZee(fontSize: 34),
+                              ),
                             ),
                           ),
-                          Text(
-                            '♀ ${data.gender}     Age : ${data.age}      ⭐ ${data.rateing}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              '♀ ${data.gender}     Age : ${data.age}      ⭐ ${data.rateing}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
                           SizedBox(height: 10),
-                          Text(
-                            '🍽️ ${data.foodType} ',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              '🍽️ ${data.foodType} ',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
                           SizedBox(height: 10),
-                          Text(
-                            '📍 ${data.address}         📞 ${data.phoneNum}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              '📍 ${data.address}         📞 ${data.phoneNum}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ],
                       ),
@@ -116,7 +124,6 @@ class _UserProfileState extends State<UserProfile> {
                 FilledButton.tonal(
                   onPressed: () {
                     context.read<UserBloc>().add(UploadPhotoEvent());
-
                   },
                   child: Row(
                     children: [Icon(Icons.camera_alt), Text("Upload Image")],
@@ -134,23 +141,23 @@ class _UserProfileState extends State<UserProfile> {
               ],
             ),
             SizedBox(height: 20),
-            _button(Icons.account_box, "Account"),
+            _button(Icons.account_box, "Account", () {}),
             SizedBox(height: 20),
-            _button(Icons.privacy_tip, "Privacy"),
+            _button(Icons.privacy_tip, "Privacy", () {}),
             SizedBox(height: 20),
-            _button(Icons.image, "Avatar"),
+            _button(Icons.image, "Avatar", () {}),
             SizedBox(height: 20),
-            _button(Icons.list, "List"),
+            _button(Icons.list, "List", () {}),
             SizedBox(height: 20),
-            _button(Icons.chat, "Chat"),
+            _button(Icons.chat, "Chat", () {}),
             SizedBox(height: 20),
-            _button(Icons.broadcast_on_home, "Brodcase"),
+            _button(Icons.broadcast_on_home, "Brodcase", () {}),
             SizedBox(height: 20),
-            _button(Icons.notification_add, "Notification"),
+            _button(Icons.notification_add, "Notification", () {}),
             SizedBox(height: 20),
-            _button(Icons.settings, "Setting"),
+            _button(Icons.settings, "Setting", () {}),
             SizedBox(height: 20),
-            _button(Icons.logout, "Log Out"),
+            _button(Icons.logout, "Log Out", () {}),
           ],
         ),
       ),
@@ -158,27 +165,30 @@ class _UserProfileState extends State<UserProfile> {
   }
 }
 
-Widget _button(IconData icon, String title) {
-  return Container(
-    margin: const EdgeInsets.only(top: 12),
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.grey[100],
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
-      children: [
-        Icon(icon),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: TextStyle(
-            color: const Color.fromARGB(255, 34, 108, 100),
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
+Widget _button(IconData icon, String title, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: TextStyle(
+              color: const Color.fromARGB(255, 34, 108, 100),
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
