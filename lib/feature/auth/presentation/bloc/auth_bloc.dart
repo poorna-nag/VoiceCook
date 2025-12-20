@@ -5,41 +5,25 @@ import 'package:voicecook/feature/auth/presentation/bloc/auth_event.dart';
 import 'package:voicecook/feature/auth/presentation/bloc/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(LoadedState()) {
-    on<SingInEvent>((event, emit) async {
-      try {
-        final success = await AuthRepoImpl().singInUser(event.authModel);
+  final AuthRepoImpl repo;
 
-        if (success) {
-          emit(LoadedState()); // Emit loaded before navigation
-          NavigationService.pushNamed(routeName: AppRoutes.home);
-        } else {
-          emit(ErrorState());
-        }
-      } catch (e) {
-        emit(ErrorState());
-      }
-    });
-    on<LogingEvent>((event, emit) async {
-      try {
-        final userLogin = await AuthRepoImpl().logInUser(
-          event.userName,
-          event.passCode,
-        );
-        if (userLogin) {
-          NavigationService.pushNamed(routeName: AppRoutes.home);
-        } else {
-          emit(ErrorState());
-        }
-      } catch (e) {
-        emit(ErrorState());
-      }
-    });
-    on<NavigateToSinginPageEvent>((event, emit) {
-      NavigationService.pushNamed(routeName: AppRoutes.signin);
-    });
-    on<NavigateToLoginPageEvent>((event, emit) {
-      NavigationService.pop();
-    });
+  AuthBloc(this.repo) : super(AuthInitial()) {
+    on<SingInEvent>(_onSignIn);
+    on<LogingEvent>(_onLogin);
+  }
+
+  Future<void> _onSignIn(SingInEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final success = await repo.singInUser(event.authModel);
+    success ? emit(AuthSuccess()) : emit(AuthError());
+    // if (success) {
+    //   NavigationService.pushNamed(routeName: AppRoutes.home);
+    // }
+  }
+
+  Future<void> _onLogin(LogingEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final success = await repo.logInUser(event.useremail, event.passCode);
+    success ? emit(AuthSuccess()) : emit(AuthError());
   }
 }

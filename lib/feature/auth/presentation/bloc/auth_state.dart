@@ -1,7 +1,9 @@
-class AuthState {}
+abstract class AuthState {}
 
-class LoadingState extends AuthState {}
+class AuthInitial extends AuthState {}
 
-class LoadedState extends AuthState {}
+class AuthLoading extends AuthState {}
 
-class ErrorState extends AuthState {}
+class AuthSuccess extends AuthState {}
+
+class AuthError extends AuthState {}

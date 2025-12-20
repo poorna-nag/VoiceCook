@@ -12,7 +12,6 @@ class AuthRepoImpl extends AuthRepo {
       await auth.signInWithEmailAndPassword(email: email, password: passCode);
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }

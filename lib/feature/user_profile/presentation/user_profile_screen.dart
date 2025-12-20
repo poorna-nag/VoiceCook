@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/user_profile/data/user_model.dart';
 import 'package:voicecook/feature/user_profile/presentation/bloc/user_bloc.dart';
 import 'package:voicecook/feature/user_profile/presentation/bloc/user_event.dart';
@@ -13,7 +14,19 @@ class UserProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile"), centerTitle: false),
+      appBar: AppBar(
+        title: Text("Profile"),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              NavigationService.pushNamed(routeName: AppRoutes.settings);
+            },
+            icon: Icon(Icons.settings),
+          ),
+        ],
+      ),
+
       body: BlocProvider(
         create: (context) => UserBloc()..add(GetUserEvent()),
         child: BlocBuilder<UserBloc, UserState>(
@@ -141,54 +154,9 @@ class _UserProfileState extends State<UserProfile> {
               ],
             ),
             SizedBox(height: 20),
-            _button(Icons.account_box, "Account", () {}),
-            SizedBox(height: 20),
-            _button(Icons.privacy_tip, "Privacy", () {}),
-            SizedBox(height: 20),
-            _button(Icons.image, "Avatar", () {}),
-            SizedBox(height: 20),
-            _button(Icons.list, "List", () {}),
-            SizedBox(height: 20),
-            _button(Icons.chat, "Chat", () {}),
-            SizedBox(height: 20),
-            _button(Icons.broadcast_on_home, "Brodcase", () {}),
-            SizedBox(height: 20),
-            _button(Icons.notification_add, "Notification", () {}),
-            SizedBox(height: 20),
-            _button(Icons.settings, "Setting", () {}),
-            SizedBox(height: 20),
-            _button(Icons.logout, "Log Out", () {}),
           ],
         ),
       ),
     );
   }
-}
-
-Widget _button(IconData icon, String title, VoidCallback onTap) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Icon(icon),
-          const SizedBox(width: 12),
-          Text(
-            title,
-            style: TextStyle(
-              color: const Color.fromARGB(255, 34, 108, 100),
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }

@@ -3,10 +3,10 @@ import 'package:voicecook/feature/auth/data/auth_model.dart';
 class AuthEvent {}
 
 class LogingEvent extends AuthEvent {
-  final String userName;
+  final String useremail;
   final String passCode;
 
-  LogingEvent({required this.userName, required this.passCode});
+  LogingEvent({required this.useremail, required this.passCode});
 }
 
 class SingInEvent extends AuthEvent {
@@ -14,7 +14,3 @@ class SingInEvent extends AuthEvent {
 
   SingInEvent({required this.authModel});
 }
-
-class NavigateToSinginPageEvent extends AuthEvent {}
-
-class NavigateToLoginPageEvent extends AuthEvent {}

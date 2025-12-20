@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/auth/data/auth_model.dart';
 import 'package:voicecook/feature/auth/presentation/bloc/auth_bloc.dart';
 import 'package:voicecook/feature/auth/presentation/bloc/auth_event.dart';
@@ -18,9 +19,11 @@ class _SingInScreenState extends State<SingInScreen> {
     return Scaffold(
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          if (state is LoadingState) {
+          if (state is AuthLoading) {
             return Center(child: CircularProgressIndicator());
-          } else if (state is ErrorState) {
+          } else if (state is AuthSuccess) {
+            return SingInScreenView();
+          } else if (state is AuthError) {
             return Center(child: Text("Error occurred"));
           } else {
             return SingInScreenView();
@@ -75,6 +78,7 @@ class _SingInScreenViewState extends State<SingInScreenView> {
               ),
             ),
           ),
+
           SizedBox(height: 10),
           TextField(
             controller: passCode,
@@ -87,12 +91,11 @@ class _SingInScreenViewState extends State<SingInScreenView> {
           ),
           SizedBox(height: 10),
           FilledButton(
-            onPressed: () {
-              context.read<AuthBloc>().add(
+            onPressed: () async {
+           context.read<AuthBloc>().add(
                 SingInEvent(
                   authModel: AuthModel(
                     userName: name.text,
-
                     passcode: passCode.text,
                     userEmail: email.text,
                   ),
@@ -104,7 +107,8 @@ class _SingInScreenViewState extends State<SingInScreenView> {
           SizedBox(height: 10),
           GestureDetector(
             onTap: () {
-              context.read<AuthBloc>().add(NavigateToLoginPageEvent());
+              // context.read<AuthBloc>().add(NavigateToLoginPageEvent());
+              NavigationService.pop();
             },
             child: Text(
               " Move to Login Page  ",

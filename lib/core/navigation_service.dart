@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:voicecook/feature/auth/presentation/login_screen.dart';
 import 'package:voicecook/feature/auth/presentation/singin_screen.dart';
@@ -8,6 +9,7 @@ import 'package:voicecook/feature/home/presentation/pages/home_screen.dart';
 import 'package:voicecook/feature/recipe_detals/presentation/recipe_home_screen.dart';
 import 'package:voicecook/feature/recipe_detals/presentation/recipe_detail_screen.dart';
 import 'package:voicecook/feature/home/presentation/splash_screen.dart';
+import 'package:voicecook/feature/settings/presentation/settings_screen.dart';
 import 'package:voicecook/feature/user_profile/presentation/add_food_screen.dart';
 import 'package:voicecook/feature/user_profile/presentation/profile_edit_screen.dart';
 import 'package:voicecook/feature/user_profile/presentation/user_profile_screen.dart';
@@ -127,6 +129,11 @@ class NavigationService {
           builder: (context) => LoginScreen(),
           settings: settings,
         );
+      case AppRoutes.settings:
+        return MaterialPageRoute(
+          builder: (context) => SettingsScreen(),
+          settings: settings,
+        );
 
       default:
         return MaterialPageRoute(
@@ -151,4 +158,5 @@ class AppRoutes {
   static const String editprofile = "/editprofile";
   static const String signin = '/signin';
   static const String login = '/login';
+  static const String settings = '/settings';
 }
