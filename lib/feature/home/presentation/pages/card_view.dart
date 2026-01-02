@@ -31,7 +31,7 @@ class _CardViewState extends State<CardView> {
                 itemCount: widget.recipes.length,
                 itemBuilder: (context, index) {
                   final item = widget.recipes[index];
-                  final bool isFav = item.isFavorite;
+                  bool isFav = item.isFavorite;
 
                   return GestureDetector(
                     onTap: () {
@@ -64,7 +64,7 @@ class _CardViewState extends State<CardView> {
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.favorite,
-                                    color: isFav ? Colors.white : Colors.red,
+                                    color: isFav ? Colors.red : Colors.white,
 
                                     size: 28,
                                   ),

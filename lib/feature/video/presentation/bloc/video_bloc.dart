@@ -14,11 +14,13 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
     FetchVideoEvent event,
     Emitter<VideoState> emit,
   ) async {
+    emit(LoadingState());
     try {
-      final repo = await VideoRepoImpl().getVideo();
-      emit(VideoLoadedState(videos: repo));
+      final repo = VideoRepoImpl();
+      final videos = await repo.getVideo();
+      emit(VideoLoadedState(videos: videos));
     } catch (e) {
-      throw Exception(e);
+      emit(VideoErrorState(error: e.toString()));
     }
   }
 }

@@ -43,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             IconButton(
               onPressed: () {
-                context.read<HomeBloc>().add(NavToProfileEvent());
+                // context.read<AuthBloc>().add(NavTolog());
+                NavigationService.pushNamed(routeName: AppRoutes.login);
               },
               icon: Icon(Icons.person, color: Colors.white),
             ),

@@ -6,8 +6,8 @@ class VideoModel {
   final String cookTime;
   final String difficulty;
   final String category;
-  final List<String> ingredients;
-  final List<String> steps;
+  final String ingredients;
+  final String steps;
   final String calories;
 
   VideoModel({
@@ -31,12 +31,13 @@ class VideoModel {
       cookTime: data['cookTime'] ?? '',
       difficulty: data['difficulty'] ?? '',
       category: data['category'] ?? '',
-      ingredients: List<String>.from(data['ingredients'] ?? []),
-      steps: List<String>.from(data['steps'] ?? []),
+      ingredients: data['ingredients'] ?? '',
+      // ingredients: List<String>.from(data['ingredients'] ?? []),
+      // steps: List<String>.from(data['steps'] ?? []),
+      steps: data['steps'] ?? '',
       calories: data['calories'] ?? 0,
     );
   }
-  // Model → Firestore (for admin add feature)
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
@@ -49,5 +50,31 @@ class VideoModel {
       'steps': steps,
       'calories': calories,
     };
+  }
+
+  VideoModel copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? imageUrl,
+    String? cookTime,
+    String? difficulty,
+    String? category,
+    String? ingredients,
+    String? steps,
+    String? calories,
+  }) {
+    return VideoModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      cookTime: cookTime ?? this.cookTime,
+      difficulty: difficulty ?? this.difficulty,
+      category: category ?? this.category,
+      ingredients: ingredients ?? this.ingredients,
+      steps: steps ?? this.steps,
+      calories: calories ?? this.calories,
+    );
   }
 }

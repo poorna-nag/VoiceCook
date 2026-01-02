@@ -9,10 +9,11 @@ import 'package:voicecook/feature/home/data/repo/recipe_repo_impl.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:voicecook/feature/home/presentation/splash_screen.dart';
 import 'package:voicecook/feature/video/presentation/bloc/video_bloc.dart';
+import 'package:voicecook/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await SharedPreferences.getInstance();
 
@@ -35,7 +36,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: NavigationService.navigatorKey,
         onGenerateRoute: NavigationService.onGenerateRoute,
-        initialRoute: AppRoutes.login,
+        initialRoute: AppRoutes.sp,
         home: SplashScreen(),
       ),
     );

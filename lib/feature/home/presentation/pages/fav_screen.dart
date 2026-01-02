@@ -61,10 +61,7 @@ class FavScreen extends StatelessWidget {
                                         color: Colors.white,
                                         size: 28,
                                       ),
-                                      onPressed: () {
-                                        
-                                        
-                                      },
+                                      onPressed: () {},
                                     ),
                                   ),
                                 ],

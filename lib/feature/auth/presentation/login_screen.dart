@@ -42,54 +42,94 @@ class LoginUi extends StatefulWidget {
 class _LoginUiState extends State<LoginUi> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("LogIn Here", style: TextStyle(fontSize: 30)),
-            SizedBox(height: 10),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message ?? 'An error occurred'),
+              backgroundColor: Colors.red,
             ),
-            SizedBox(height: 10),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            FilledButton(
-              onPressed: () {
-                context.read<AuthBloc>().add(
-                  LogingEvent(
-                    useremail: emailController.text,
-                    passCode: passwordController.text,
+          );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("LogIn Here", style: TextStyle(fontSize: 30)),
+              SizedBox(height: 10),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-              },
-
-              child: Text("Login "),
-            ),
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                NavigationService.pushNamed(routeName: AppRoutes.signin);
-              },
-              child: Text(" Register Here >> "),
-            ),
-          ],
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 10),
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return FilledButton(
+                    onPressed: state is AuthLoading
+                        ? null
+                        : () {
+                            if (emailController.text.isEmpty ||
+                                passwordController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Please fill all fields'),
+                                ),
+                              );
+                              return;
+                            }
+                            context.read<AuthBloc>().add(
+                              LogingEvent(
+                                useremail: emailController.text,
+                                passCode: passwordController.text,
+                              ),
+                            );
+                          },
+                    child: state is AuthLoading
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text("Login "),
+                  );
+                },
+              ),
+              SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  NavigationService.pushNamed(routeName: AppRoutes.signin);
+                },
+                child: Text(" Register Here >> "),
+              ),
+            ],
+          ),
         ),
       ),
     );

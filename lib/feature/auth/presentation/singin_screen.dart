@@ -47,75 +47,133 @@ class _SingInScreenViewState extends State<SingInScreenView> {
     return emailRegex.hasMatch(email);
   }
 
-  TextEditingController name = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController passCode = TextEditingController();
+  final TextEditingController name = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController passCode = TextEditingController();
+
+  @override
+  void dispose() {
+    name.dispose();
+    email.dispose();
+    passCode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(" Well Come", style: TextStyle(fontSize: 40)),
-          SizedBox(height: 10),
-          TextField(
-            controller: name,
-            decoration: InputDecoration(
-              label: Text("Enter your name"),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message ?? 'An error occurred'),
+              backgroundColor: Colors.red,
             ),
-          ),
-          SizedBox(height: 10),
-          TextField(
-            controller: email,
-            decoration: InputDecoration(
-              label: Text("Enter Your Email"),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-
-          SizedBox(height: 10),
-          TextField(
-            controller: passCode,
-            decoration: InputDecoration(
-              label: Text("Enter PassCode"),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-          FilledButton(
-            onPressed: () async {
-           context.read<AuthBloc>().add(
-                SingInEvent(
-                  authModel: AuthModel(
-                    userName: name.text,
-                    passcode: passCode.text,
-                    userEmail: email.text,
-                  ),
+          );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(" Well Come", style: TextStyle(fontSize: 40)),
+            SizedBox(height: 10),
+            TextField(
+              controller: name,
+              decoration: InputDecoration(
+                label: Text("Enter your name"),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              );
-            },
-            child: Text("Register Now"),
-          ),
-          SizedBox(height: 10),
-          GestureDetector(
-            onTap: () {
-              // context.read<AuthBloc>().add(NavigateToLoginPageEvent());
-              NavigationService.pop();
-            },
-            child: Text(
-              " Move to Login Page  ",
-              style: TextStyle(fontSize: 18),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 10),
+            TextField(
+              controller: email,
+              decoration: InputDecoration(
+                label: Text("Enter Your Email"),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: passCode,
+              decoration: InputDecoration(
+                label: Text("Enter PassCode"),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 10),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return FilledButton(
+                  onPressed: state is AuthLoading
+                      ? null
+                      : () {
+                          if (name.text.isEmpty ||
+                              email.text.isEmpty ||
+                              passCode.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Please fill all fields')),
+                            );
+                            return;
+                          }
+
+                          if (!isValidEmail(email.text)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Please enter a valid email'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (passCode.text.length < 6) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Password must be at least 6 characters',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          context.read<AuthBloc>().add(
+                            SingInEvent(
+                              authModel: AuthModel(
+                                userName: name.text,
+                                passcode: passCode.text,
+                                userEmail: email.text,
+                              ),
+                            ),
+                          );
+                        },
+                  child: state is AuthLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Register Now"),
+                );
+              },
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                NavigationService.pop();
+              },
+              child: Text(
+                " Move to Login Page  ",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

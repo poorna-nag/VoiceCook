@@ -14,22 +14,42 @@ class VideoScreen extends StatefulWidget {
 
 class _VideoScreenState extends State<VideoScreen> {
   @override
+  void initState() {
+    super.initState();
+    context.read<VideoBloc>().add(FetchVideoEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => VideoBloc()..add(FetchVideoEvent()),
-      child: Scaffold(
-        body: BlocBuilder<VideoBloc, VideoState>(
-          builder: (context, state) {
-            if (state is LoadingState) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is VideoLoadedState) {
-              return _VideoViewState(videoModel: state.videos);
-            } else if (state is VideoErrorState) {
-              return Text(state.error);
+    return Scaffold(
+      body: BlocBuilder<VideoBloc, VideoState>(
+        builder: (context, state) {
+          if (state is LoadingState) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is VideoLoadedState) {
+            if (state.videos.isEmpty) {
+              return Center(child: Text('No videos available'));
             }
-            return SizedBox.shrink();
-          },
-        ),
+            return _VideoViewState(videoModel: state.videos);
+          } else if (state is VideoErrorState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Error: ${state.error}'),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<VideoBloc>().add(FetchVideoEvent());
+                    },
+                    child: Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
@@ -50,15 +70,64 @@ class __VideoViewStateState extends State<_VideoViewState> {
       itemCount: widget.videoModel.length,
       itemBuilder: (context, index) {
         final video = widget.videoModel[index];
-        return Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(8),
-              height: 220,
-              width: double.infinity,
-              child: Image.network(video.imageUrl, fit: BoxFit.cover),
-            ),
-          ],
+        return Card(
+          margin: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (video.imageUrl.isNotEmpty)
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                  child: Image.network(
+                    video.imageUrl,
+                    fit: BoxFit.cover,
+                    height: 220,
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 220,
+                        color: Colors.grey[300],
+                        child: Icon(Icons.broken_image),
+                      );
+                    },
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      video.name,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      video.description,
+                      style: TextStyle(fontSize: 14),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, size: 16),
+                        SizedBox(width: 4),
+                        Text('${video.cookTime}'),
+                        SizedBox(width: 16),
+                        Icon(Icons.local_fire_department, size: 16),
+                        SizedBox(width: 4),
+                        Text('${video.calories} cal'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

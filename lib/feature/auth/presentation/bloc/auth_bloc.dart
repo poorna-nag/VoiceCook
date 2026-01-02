@@ -14,16 +14,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onSignIn(SingInEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    final success = await repo.singInUser(event.authModel);
-    success ? emit(AuthSuccess()) : emit(AuthError());
-    // if (success) {
-    //   NavigationService.pushNamed(routeName: AppRoutes.home);
-    // }
+    try {
+      final success = await repo.singInUser(event.authModel);
+      if (success) {
+        emit(AuthSuccess());
+        NavigationService.pushReplacementNamed(routeName: AppRoutes.home);
+      } else {
+        emit(
+          AuthError(message: 'Sign up failed. Please check your credentials.'),
+        );
+      }
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
   }
 
   Future<void> _onLogin(LogingEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    final success = await repo.logInUser(event.useremail, event.passCode);
-    success ? emit(AuthSuccess()) : emit(AuthError());
+    try {
+      final success = await repo.logInUser(event.useremail, event.passCode);
+      if (success) {
+        emit(AuthSuccess());
+        NavigationService.pushReplacementNamed(routeName: AppRoutes.home);
+      } else {
+        emit(
+          AuthError(
+            message: 'Login failed. Please check your email and password.',
+          ),
+        );
+      }
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
   }
 }
