@@ -42,11 +42,6 @@ class SingInScreenView extends StatefulWidget {
 }
 
 class _SingInScreenViewState extends State<SingInScreenView> {
-  bool isValidEmail(String email) {
-    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-    return emailRegex.hasMatch(email);
-  }
-
   final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
   final TextEditingController passCode = TextEditingController();
@@ -77,7 +72,7 @@ class _SingInScreenViewState extends State<SingInScreenView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(" Well Come", style: TextStyle(fontSize: 40)),
+            Text(" WelCome", style: TextStyle(fontSize: 40)),
             SizedBox(height: 10),
             TextField(
               controller: name,
@@ -122,15 +117,6 @@ class _SingInScreenViewState extends State<SingInScreenView> {
                               passCode.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Please fill all fields')),
-                            );
-                            return;
-                          }
-
-                          if (!isValidEmail(email.text)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Please enter a valid email'),
-                              ),
                             );
                             return;
                           }

@@ -81,9 +81,9 @@ class _FeedScreenState extends State<FeedScreen> {
                       ),
                       child: Row(
                         children: [
-                          _buildToggle("Video", 0),
+                          buildToggle("Video", 0),
                           SizedBox(width: 5),
-                          _buildToggle("Image", 1),
+                          buildToggle("Image", 1),
                         ],
                       ),
                     ),
@@ -251,7 +251,9 @@ class _FeedScreenState extends State<FeedScreen> {
                                   id: '',
                                   name: name.text,
                                   description: description.text,
-                                  imageUrl: '',
+                                  imageUrl: selectedMedia.isNotEmpty
+                                      ? selectedMedia.first.path
+                                      : '',
                                   cookTime: cookTime.text,
                                   difficulty: difficulty.text,
                                   category: category.text,
@@ -261,10 +263,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                 );
 
                                 context.read<FeedBloc>().add(
-                                  FeedVideoEvent(
-                                    videoModel: videoModel,
-                                    mediaFiles: selectedMedia,
-                                  ),
+                                  FeedVideoEvent(videoModel: videoModel),
                                 );
                               },
                         child: state is FeedLoadingState
@@ -285,7 +284,7 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  Widget _buildToggle(String text, int index) {
+  Widget buildToggle(String text, int index) {
     bool isSelected = selectedIndex == index;
     return Expanded(
       child: GestureDetector(

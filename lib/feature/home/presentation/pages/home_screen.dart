@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voicecook/core/navigation_service.dart';
@@ -43,8 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             IconButton(
               onPressed: () {
+                if (FirebaseAuth.instance.currentUser == null) {
+                  NavigationService.pushNamed(routeName: AppRoutes.login);
+                } else {
+                  NavigationService.pushNamed(routeName: AppRoutes.profile);
+                }
+                
                 // context.read<AuthBloc>().add(NavTolog());
-                NavigationService.pushNamed(routeName: AppRoutes.login);
               },
               icon: Icon(Icons.person, color: Colors.white),
             ),

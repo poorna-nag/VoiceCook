@@ -10,9 +10,9 @@ class FeedRepoImpl extends FeedRepo {
 
   @override
   Future<List<VideoModel>> addVideo(VideoModel video) async {
-    await firestore.collection('videos').add(video.toFirestore());
+    await firestore.collection('vedios').add(video.toFirestore());
 
-    final querySnapshot = await firestore.collection('videos').get();
+    final querySnapshot = await firestore.collection('vedios').get();
     final videos = querySnapshot.docs
         .map((doc) => VideoModel.fromJson(doc.data(), doc.id))
         .toList();
@@ -22,7 +22,7 @@ class FeedRepoImpl extends FeedRepo {
 
   Future<String> uploadMedia(File file, String fileName) async {
     try {
-      final ref = storage.ref().child('videos/$fileName');
+      final ref = storage.ref().child('vedios/$fileName');
       final uploadTask = ref.putFile(file);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();

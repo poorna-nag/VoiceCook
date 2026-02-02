@@ -32,23 +32,9 @@ class _VideoScreenState extends State<VideoScreen> {
             }
             return _VideoViewState(videoModel: state.videos);
           } else if (state is VideoErrorState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${state.error}'),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<VideoBloc>().add(FetchVideoEvent());
-                    },
-                    child: Text('Retry'),
-                  ),
-                ],
-              ),
-            );
+            return Text('Error: ${state.error}');
           }
-          return Center(child: CircularProgressIndicator());
+          return SizedBox.shrink();
         },
       ),
     );

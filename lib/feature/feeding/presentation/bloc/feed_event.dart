@@ -12,7 +12,7 @@ class GetMediaEvent extends FeedEvent {
 
 class FeedVideoEvent extends FeedEvent {
   final VideoModel videoModel;
-  final List<XFile>? mediaFiles;
+  // final List<XFile>? mediaFiles;
 
-  FeedVideoEvent({required this.videoModel, this.mediaFiles});
+  FeedVideoEvent({required this.videoModel, });
 }
