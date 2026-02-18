@@ -118,7 +118,7 @@ class NavigationService {
           builder: (context) => AddFoodScreen(),
           settings: settings,
         );
-      case AppRoutes.signin:
+      case AppRoutes.signup:
         return MaterialPageRoute(
           builder: (context) => SignUpScreen(),
           settings: settings,
@@ -155,7 +155,7 @@ class AppRoutes {
   static const String profile = "/profile";
   static const String addInfo = "/instruction";
   static const String editprofile = "/editprofile";
-  static const String signin = '/signin';
+  static const String signup = '/signup';
   static const String login = '/login';
   static const String settings = '/settings';
 }
