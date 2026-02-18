@@ -15,8 +15,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Recipe"),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
+        title: const Text(
+          "Recipe",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF1B3A2E),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search, color: Colors.white),
+          ),
+        ],
+        elevation: 0,
       ),
       body: CardView(recipes: widget.recipe),
     );

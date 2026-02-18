@@ -15,7 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UploadPhotoEvent>(_onUploadPhotoEvent);
     on<AddFoodInfoEvent>(_onAddFoodInfoEvent);
     on<UploadProfilePhotoEvent>(_onUploadProfilePhotoEvent);
-    // on<EditProfileEvent>(_onEditProfileEvent);
+    on<EditProfileEvent>(_onEditProfileEvent);
   }
 
   FutureOr<void> _onGetUserEvent(
@@ -37,12 +37,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async {
     try {
       final image = await picker.pickImage(source: ImageSource.gallery);
-      NavigationService.pushNamed(routeName: AppRoutes.editprofile);
       if (image != null) {
         emit(UploadImageState(image: File(image.path)));
       }
     } catch (e) {
-      emit(UserErrorState(error: state.toString()));
+      emit(UserErrorState(error: e.toString()));
     }
   }
 
@@ -65,10 +64,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (_) {}
   }
 
-  // FutureOr<void> _onEditProfileEvent(
-  //   EditProfileEvent event,
-  //   Emitter<UserState> emit,
-  // ) {
-  //   NavigationService.pushNamed(routeName: AppRoutes.editprofile);
-  // }
+  FutureOr<void> _onEditProfileEvent(
+    EditProfileEvent event,
+    Emitter<UserState> emit,
+  ) {
+    NavigationService.pushNamed(routeName: AppRoutes.editprofile);
+  }
 }

@@ -15,110 +15,94 @@ class CardView extends StatefulWidget {
 class _CardViewState extends State<CardView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.75,
-                ),
-                itemCount: widget.recipes.length,
-                itemBuilder: (context, index) {
-                  final item = widget.recipes[index];
-                  bool isFav = item.isFavorite;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.75,
+        ),
+        itemCount: widget.recipes.length,
+        itemBuilder: (context, index) {
+          final item = widget.recipes[index];
+          bool isFav = item.isFavorite;
 
-                  return GestureDetector(
-                    onTap: () {
-                      context.read<HomeBloc>().add(
-                        NavToDeatilEvent(recipe: item),
-                      );
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+          return GestureDetector(
+            onTap: () {
+              context.read<HomeBloc>().add(NavToDetailEvent(recipe: item));
+            },
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              clipBehavior: Clip.antiAlias,
+              elevation: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 1,
+                        child: Image.network(
+                          item.imageUrl,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
                       ),
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1,
-                                child: Image.network(
-                                  item.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
-                              ),
-                              Positioned(
-                                top: 8,
-                                right: 8,
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.favorite,
-                                    color: isFav ? Colors.red : Colors.white,
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.favorite,
+                            color: isFav ? Colors.red : Colors.white,
 
-                                    size: 28,
-                                  ),
-                                  onPressed: () {
-                                    context.read<HomeBloc>().add(
-                                      AddToFavoriteEvent(recipe: item),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+                            size: 28,
                           ),
+                          onPressed: () {
+                            context.read<HomeBloc>().add(
+                              AddToFavoriteEvent(recipe: item),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
 
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            child: FittedBox(
-                              child: Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              item.description,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 13,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-
-                          const SizedBox(height: 6),
-                        ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: FittedBox(
+                      child: Text(
+                        item.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  );
-                },
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      item.description,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+                ],
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

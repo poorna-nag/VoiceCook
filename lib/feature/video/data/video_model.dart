@@ -3,6 +3,7 @@ class VideoModel {
   final String name;
   final String description;
   final String imageUrl;
+  final String videoUrl;
   final String cookTime;
   final String difficulty;
   final String category;
@@ -15,6 +16,7 @@ class VideoModel {
     required this.name,
     required this.description,
     required this.imageUrl,
+    required this.videoUrl,
     required this.cookTime,
     required this.difficulty,
     required this.category,
@@ -28,14 +30,13 @@ class VideoModel {
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
+      videoUrl: data['videoUrl'] ?? '',
       cookTime: data['cookTime'] ?? '',
       difficulty: data['difficulty'] ?? '',
       category: data['category'] ?? '',
       ingredients: data['ingredients'] ?? '',
-      // ingredients: List<String>.from(data['ingredients'] ?? []),
-      // steps: List<String>.from(data['steps'] ?? []),
       steps: data['steps'] ?? '',
-      calories: data['calories'] ?? 0,
+      calories: data['calories']?.toString() ?? '0',
     );
   }
   Map<String, dynamic> toFirestore() {
@@ -43,6 +44,7 @@ class VideoModel {
       'name': name,
       'description': description,
       'imageUrl': imageUrl,
+      'videoUrl': videoUrl,
       'cookTime': cookTime,
       'difficulty': difficulty,
       'category': category,
@@ -57,6 +59,7 @@ class VideoModel {
     String? name,
     String? description,
     String? imageUrl,
+    String? videoUrl,
     String? cookTime,
     String? difficulty,
     String? category,
@@ -69,6 +72,7 @@ class VideoModel {
       name: name ?? this.name,
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
       cookTime: cookTime ?? this.cookTime,
       difficulty: difficulty ?? this.difficulty,
       category: category ?? this.category,

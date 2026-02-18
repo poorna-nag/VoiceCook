@@ -16,10 +16,10 @@ class NavToSeeMoreEvent extends HomeEvent {
   NavToSeeMoreEvent(this.recipes);
 }
 
-class NavToDeatilEvent extends HomeEvent {
+class NavToDetailEvent extends HomeEvent {
   final RecipeModel recipe;
 
-  NavToDeatilEvent({required this.recipe});
+  NavToDetailEvent({required this.recipe});
 }
 
 class SearchRecipeEvent extends HomeEvent {

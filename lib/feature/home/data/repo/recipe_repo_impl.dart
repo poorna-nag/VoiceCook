@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/data/repo/recipe_repo.dart';
 
 class RecipeRepoImpl extends RecipeRepo {
-  final List<RecipeModel> recipes = [
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final List<RecipeModel> localRecipes = [
     // 1 🍳 Masala Dosa (Breakfast)
     RecipeModel(
       id: '1',
@@ -879,7 +882,15 @@ class RecipeRepoImpl extends RecipeRepo {
 
   @override
   Future<List<RecipeModel>> getRecipe() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return recipes;
+    try {
+      final snapshot = await _firestore.collection('recipes').get();
+      final firestoreRecipes = snapshot.docs.map((doc) {
+        return RecipeModel.fromJson(doc.data());
+      }).toList();
+
+      return [...localRecipes, ...firestoreRecipes];
+    } catch (e) {
+      return localRecipes;
+    }
   }
 }

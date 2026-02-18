@@ -30,7 +30,7 @@ class FavScreen extends StatelessWidget {
                       return GestureDetector(
                         onTap: () {
                           context.read<HomeBloc>().add(
-                            NavToDeatilEvent(recipe: item),
+                            NavToDetailEvent(recipe: item),
                           );
                         },
                         child: Card(

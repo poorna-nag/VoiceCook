@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
-import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
-import 'package:voicecook/feature/home/presentation/bloc/home_event.dart';
 
 class RecipeHomeScreen extends StatefulWidget {
   final RecipeModel recipeModel;
@@ -57,6 +54,17 @@ class _RecipeHomeScreenState extends State<RecipeHomeScreen> {
             child: Image.network(
               widget.recipeModel.imageUrl,
               fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            top: 40,
+            left: 20,
+            child: CircleAvatar(
+              backgroundColor: Colors.black26,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
           ),
 
@@ -148,7 +156,7 @@ class _RecipeHomeScreenState extends State<RecipeHomeScreen> {
                           ),
                           FilledButton(
                             onPressed: () {
-                              context.read<HomeBloc>().add(NavToHomeEvent());
+                              Navigator.pop(context);
                             },
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(

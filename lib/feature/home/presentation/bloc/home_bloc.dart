@@ -18,7 +18,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<NavToHomeEvent>(_onNavToHomeEvent);
     on<GetRecipeEvent>(_onGetRecipeEvent);
     on<NavToSeeMoreEvent>(_onSeeMoreEvent);
-    on<NavToDeatilEvent>(_onNavToDeatailEvent);
+    on<NavToDetailEvent>(_onNavToDetailEvent);
     on<AddToFavoriteEvent>(_onAddToFavoriteEvent);
     on<NavToFavScreenEvent>(_onNavToFavScreen);
     on<SearchRecipeEvent>(_onSearchRecipeEvent);
@@ -46,8 +46,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     NavToHomeEvent event,
     Emitter<HomeState> emit,
   ) {
-    Future.delayed(Duration(seconds: 2));
-    NavigationService.pushNamed(routeName: AppRoutes.home);
+    NavigationService.pushReplacementNamed(routeName: AppRoutes.home);
   }
 
   FutureOr<void> _onSeeMoreEvent(
@@ -60,8 +59,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  FutureOr<void> _onNavToDeatailEvent(
-    NavToDeatilEvent event,
+  FutureOr<void> _onNavToDetailEvent(
+    NavToDetailEvent event,
     Emitter<HomeState> emit,
   ) {
     NavigationService.pushNamed(

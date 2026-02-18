@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,31 +14,38 @@ class UserProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text(
+          "Profile",
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             onPressed: () {
               NavigationService.pushNamed(routeName: AppRoutes.settings);
             },
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings, color: Colors.white),
           ),
         ],
       ),
+      extendBodyBehindAppBar: true,
 
       body: BlocProvider(
         create: (context) => UserBloc()..add(GetUserEvent()),
         child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
-            File? image;
             if (state is UserLoadingState) {
               return Center(child: CircularProgressIndicator());
             } else if (state is UserLoadedState) {
               return UserProfile(user: state.user);
-            } else if (state is UploadImageState) {
-              image = state.image;
             } else if (state is UserErrorState) {
-              return Text(state.error);
+              return Center(child: Text(state.error));
             }
             return SizedBox.shrink();
           },
@@ -49,113 +55,290 @@ class UserProfileScreen extends StatelessWidget {
   }
 }
 
-class UserProfile extends StatefulWidget {
+class UserProfile extends StatelessWidget {
   final UserModel user;
   const UserProfile({super.key, required this.user});
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
-}
-
-class _UserProfileState extends State<UserProfile> {
-  @override
   Widget build(BuildContext context) {
-    final data = widget.user;
+    final theme = Theme.of(context);
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 180,
-              child: Card(
-                elevation: 7,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.read<UserBloc>().add(EditProfileEvent());
-                        },
-                        child: Container(
-                          height: 150,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: CircleAvatar(
-                            child: Image.network(
-                              "https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1287",
-                            ),
-                          ),
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Expanded(
-                              child: Text(
-                                data.name,
-                                style: GoogleFonts.aBeeZee(fontSize: 34),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '♀ ${data.gender}     Age : ${data.age}      ⭐ ${data.rateing}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Expanded(
-                            child: Text(
-                              '🍽️ ${data.foodType} ',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Expanded(
-                            child: Text(
-                              '📍 ${data.address}         📞 ${data.phoneNum}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.primaryContainer,
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
                   ),
                 ),
               ),
+              Positioned(
+                bottom: -60,
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 70,
+                        backgroundImage: NetworkImage(user.imageUrl),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<UserBloc>().add(
+                            UploadProfilePhotoEvent(),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: theme.colorScheme.surface,
+                              width: 2,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: theme.colorScheme.onPrimary,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 70),
+          Text(
+            user.name,
+            style: GoogleFonts.outfit(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
             ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            user.email,
+            style: GoogleFonts.outfit(
+              fontSize: 16,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
               children: [
-                FilledButton.tonal(
-                  onPressed: () {
-                    context.read<UserBloc>().add(UploadPhotoEvent());
-                  },
-                  child: Row(
-                    children: [Icon(Icons.camera_alt), Text("Upload Image")],
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      context.read<UserBloc>().add(EditProfileEvent());
+                    },
+                    icon: const Icon(Icons.edit_outlined),
+                    label: const Text("Edit Profile"),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
                   ),
                 ),
-
-                FilledButton.tonal(
-                  onPressed: () {
-                    context.read<UserBloc>().add(AddFoodInfoEvent());
-                  },
-                  child: Row(
-                    children: [Icon(Icons.menu), Text("Add Instraction")],
+                const SizedBox(width: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      // More options
+                    },
+                    icon: const Icon(Icons.more_horiz),
+                    padding: const EdgeInsets.all(16),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-          ],
-        ),
+          ),
+          const SizedBox(height: 32),
+          _buildInfoSection(context, user),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: OutlinedButton.icon(
+              onPressed: () {
+                context.read<UserBloc>().add(AddFoodInfoEvent());
+              },
+              icon: const Icon(Icons.menu_book),
+              label: const Text("Recipe Instructions"),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 56),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoSection(BuildContext context, UserModel user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Account Details",
+            style: GoogleFonts.outfit(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildInfoCard(context, [
+            _buildInfoRow(context, Icons.person_outline, "Gender", user.gender),
+            _buildInfoRow(
+              context,
+              Icons.calendar_today_outlined,
+              "Age",
+              user.age,
+            ),
+            _buildInfoRow(context, Icons.star_outline, "Rating", user.rating),
+            _buildInfoRow(
+              context,
+              Icons.restaurant_outlined,
+              "Food Preference",
+              user.foodType,
+            ),
+            _buildInfoRow(
+              context,
+              Icons.location_on_outlined,
+              "Address",
+              user.address,
+            ),
+            _buildInfoRow(
+              context,
+              Icons.phone_outlined,
+              "Phone",
+              user.phoneNum,
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(BuildContext context, List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+      child: Column(
+        children: List.generate(children.length, (index) {
+          return Column(
+            children: [
+              children[index],
+              if (index != children.length - 1)
+                Divider(
+                  height: 1,
+                  indent: 60,
+                  endIndent: 20,
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.outfit(
+                    fontSize: 14,
+                    color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.outfit(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

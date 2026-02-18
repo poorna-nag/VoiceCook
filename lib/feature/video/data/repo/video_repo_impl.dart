@@ -6,9 +6,18 @@ class VideoRepoImpl extends VideoRepo {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   @override
   Future<List<VideoModel>> getVideo() async {
-    final snapshot = await firestore.collection('vedios').get();
-    return snapshot.docs.map((doc) {
+    // Fetch from both collection names to ensure compatibility with old data
+    final snapshotNew = await firestore.collection('videos').get();
+    final snapshotOld = await firestore.collection('vedios').get();
+
+    final newVideos = snapshotNew.docs.map((doc) {
       return VideoModel.fromJson(doc.data(), doc.id);
     }).toList();
+
+    final oldVideos = snapshotOld.docs.map((doc) {
+      return VideoModel.fromJson(doc.data(), doc.id);
+    }).toList();
+
+    return [...newVideos, ...oldVideos];
   }
 }

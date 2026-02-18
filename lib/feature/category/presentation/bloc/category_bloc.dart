@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/category/data/repo/category_repo_impl.dart';
-import 'package:voicecook/feature/category/presentation/bloc/categoty_event.dart';
-import 'package:voicecook/feature/category/presentation/bloc/categoty_state.dart';
+import 'package:voicecook/feature/category/presentation/bloc/category_event.dart';
+import 'package:voicecook/feature/category/presentation/bloc/category_state.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/data/repo/recipe_repo_impl.dart';
 
-class CategoryBloc extends Bloc<CategotyEvent, CategoryState> {
-  CategoryBloc() : super(CategotyInitState()) {
-    on<GetCategotyEvent>(_onGetCategotyEvent);
-    on<GetCategotyListEvent>(_onGetCategotyListEvent);
+class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
+  CategoryBloc() : super(CategoryInitState()) {
+    on<GetCategoryEvent>(_onGetCategoryEvent);
+    on<GetCategoryListEvent>(_onGetCategoryListEvent);
   }
 
-  FutureOr<void> _onGetCategotyEvent(
-    GetCategotyEvent event,
+  FutureOr<void> _onGetCategoryEvent(
+    GetCategoryEvent event,
     Emitter<CategoryState> emit,
   ) async {
     emit(CategoryLoadingState());
@@ -27,8 +27,8 @@ class CategoryBloc extends Bloc<CategotyEvent, CategoryState> {
     }
   }
 
-  FutureOr<void> _onGetCategotyListEvent(
-    GetCategotyListEvent event,
+  FutureOr<void> _onGetCategoryListEvent(
+    GetCategoryListEvent event,
     Emitter<CategoryState> emit,
   ) async {
     List<RecipeModel> allRecipes = await RecipeRepoImpl().getRecipe();
@@ -41,8 +41,7 @@ class CategoryBloc extends Bloc<CategotyEvent, CategoryState> {
         )
         .toList();
 
-    emit(GetCategoryRecipeState(recipe: filtered));
-
+    // Navigation happens here, but we stay in CategoryLoadedState so icons don't vanish
     NavigationService.pushNamed(
       routeName: AppRoutes.categoryList,
       arguments: {'recipes': filtered},

@@ -19,11 +19,11 @@ class AuthRepoImpl extends AuthRepo {
   @override
   Future<bool> logOut() async {
     await auth.signOut();
-    return false;
+    return true;
   }
 
   @override
-  Future<bool> singInUser(AuthModel request) async {
+  Future<bool> signUpUser(AuthModel request) async {
     try {
       final userCredential = await auth.createUserWithEmailAndPassword(
         email: request.userEmail,
@@ -36,8 +36,7 @@ class AuthRepoImpl extends AuthRepo {
         "userName": request.userName,
       });
       return true;
-    } on FirebaseAuthException catch (e) {
-      print(e);
+    } on FirebaseAuthException catch (_) {
       return false;
     }
   }

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:voicecook/feature/feeding/presentation/bloc/feed_bloc.dart';
 import 'package:voicecook/feature/feeding/presentation/bloc/feed_event.dart';
 import 'package:voicecook/feature/feeding/presentation/bloc/feed_state.dart';
+import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/video/data/video_model.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -16,32 +17,36 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  int selectedIndex = 0;
+  int selectedIndex = 0; // 0 for Video Reel, 1 for Recipe Post
   List<XFile> selectedMedia = [];
-  final name = TextEditingController();
-  final description = TextEditingController();
-  final cookTime = TextEditingController();
-  final category = TextEditingController();
-  final ingredients = TextEditingController();
-  final steps = TextEditingController();
-  final calories = TextEditingController();
-  final difficulty = TextEditingController();
+
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final cookTimeController = TextEditingController();
+  final categoryController = TextEditingController();
+  final ingredientsController = TextEditingController();
+  final stepsController = TextEditingController();
+  final caloriesController = TextEditingController();
+  final difficultyController = TextEditingController();
 
   @override
   void dispose() {
-    name.dispose();
-    description.dispose();
-    cookTime.dispose();
-    category.dispose();
-    ingredients.dispose();
-    steps.dispose();
-    calories.dispose();
-    difficulty.dispose();
+    nameController.dispose();
+    descriptionController.dispose();
+    cookTimeController.dispose();
+    categoryController.dispose();
+    ingredientsController.dispose();
+    stepsController.dispose();
+    caloriesController.dispose();
+    difficultyController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isVideo = selectedIndex == 0;
+
     return BlocProvider(
       create: (context) => FeedBloc(FeedInitState()),
       child: BlocListener<FeedBloc, FeedState>(
@@ -51,264 +56,397 @@ class _FeedScreenState extends State<FeedScreen> {
               selectedMedia = state.medias;
             });
           } else if (state is FeedSuccessState) {
-            name.clear();
-            description.clear();
-            cookTime.clear();
-            category.clear();
-            ingredients.clear();
-            steps.clear();
-            calories.clear();
-            difficulty.clear();
-            setState(() {
-              selectedMedia = [];
-            });
+            _clearControllers();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: theme.colorScheme.primary,
+              ),
+            );
+          } else if (state is FeedErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: theme.colorScheme.error,
+              ),
+            );
           }
         },
         child: SingleChildScrollView(
-          child: BlocBuilder<FeedBloc, FeedState>(
-            builder: (context, state) {
-              return Padding(
-                padding: EdgeInsets.all(18.0),
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.primaryContainer,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
+                  ),
+                ),
+                padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Row(
-                        children: [
-                          buildToggle("Video", 0),
-                          SizedBox(width: 5),
-                          buildToggle("Image", 1),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: () {
-                        context.read<FeedBloc>().add(
-                          GetMediaEvent(
-                            source: [ImageSource.gallery],
-                            isVideo: selectedIndex == 0,
-                          ),
-                        );
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 250,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFF1B3A2E),
-                        ),
-                        child: selectedMedia.isNotEmpty
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.file(
-                                  File(selectedMedia.first.path),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 250,
-                                ),
-                              )
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.camera_alt,
-                                    size: 120,
-                                    color: Colors.white,
-                                  ),
-                                  Text(
-                                    "Add Media",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                      ),
-                    ),
-
-                    SizedBox(height: 20),
                     Text(
-                      'Enter Details',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1B3A2E),
+                      "Create Content",
+                      style: GoogleFonts.outfit(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: name,
-                      decoration: InputDecoration(
-                        label: Text('name'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: description,
-                      decoration: InputDecoration(
-                        label: Text('description'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: cookTime,
-                      decoration: InputDecoration(
-                        label: Text('cookTime'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: category,
-                      decoration: InputDecoration(
-                        label: Text('category'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: ingredients,
-                      decoration: InputDecoration(
-                        label: Text('ingredients'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: steps,
-                      decoration: InputDecoration(
-                        label: Text('steps'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: calories,
-                      decoration: InputDecoration(
-                        label: Text('calories'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: difficulty,
-                      decoration: InputDecoration(
-                        label: Text('difficulty'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF1B3A2E),
-                        ),
-                        onPressed: state is FeedLoadingState
-                            ? null
-                            : () {
-                                if (name.text.isEmpty ||
-                                    description.text.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Please fill required fields',
-                                      ),
-                                    ),
-                                  );
-                                  return;
-                                }
-
-                                final videoModel = VideoModel(
-                                  id: '',
-                                  name: name.text,
-                                  description: description.text,
-                                  imageUrl: selectedMedia.isNotEmpty
-                                      ? selectedMedia.first.path
-                                      : '',
-                                  cookTime: cookTime.text,
-                                  difficulty: difficulty.text,
-                                  category: category.text,
-                                  ingredients: ingredients.text,
-                                  steps: steps.text,
-                                  calories: calories.text,
-                                );
-
-                                context.read<FeedBloc>().add(
-                                  FeedVideoEvent(videoModel: videoModel),
-                                );
-                              },
-                        child: state is FeedLoadingState
-                            ? CircularProgressIndicator(color: Colors.white)
-                            : Text(
-                                "ADD ",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Share your culinary magic with the world",
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        color: Colors.white.withOpacity(0.8),
                       ),
                     ),
                   ],
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceVariant.withOpacity(
+                          0.5,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          _buildTab("Video Reel", 0),
+                          const SizedBox(width: 8),
+                          _buildTab("Recipe Post", 1),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    _buildMediaPicker(context, isVideo, theme),
+                    const SizedBox(height: 32),
+                    _buildSectionTitle("General Information"),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      nameController,
+                      "Dish Name",
+                      Icons.restaurant_menu,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      descriptionController,
+                      "Description",
+                      Icons.description_outlined,
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            cookTimeController,
+                            "Cook Time",
+                            Icons.timer_outlined,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            difficultyController,
+                            "Difficulty",
+                            Icons.speed,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            categoryController,
+                            "Category",
+                            Icons.category_outlined,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            caloriesController,
+                            "Calories",
+                            Icons.local_fire_department_outlined,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _buildSectionTitle("Preparation Details"),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      ingredientsController,
+                      "Ingredients (Comma separated)",
+                      Icons.list_alt,
+                      maxLines: 4,
+                    ),
+                    if (!isVideo) ...[
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                        stepsController,
+                        "Steps (Comma separated)",
+                        Icons.format_list_numbered,
+                        maxLines: 6,
+                      ),
+                    ],
+                    const SizedBox(height: 48),
+                    BlocBuilder<FeedBloc, FeedState>(
+                      builder: (context, state) {
+                        return SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: state is FeedLoadingState
+                                ? null
+                                : () => _handlePublish(context, isVideo),
+                            style: FilledButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: state is FeedLoadingState
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    isVideo ? "Publish Reel" : "Post Recipe",
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget buildToggle(String text, int index) {
-    bool isSelected = selectedIndex == index;
+  void _clearControllers() {
+    nameController.clear();
+    descriptionController.clear();
+    cookTimeController.clear();
+    categoryController.clear();
+    ingredientsController.clear();
+    stepsController.clear();
+    caloriesController.clear();
+    difficultyController.clear();
+    setState(() {
+      selectedMedia = [];
+    });
+  }
+
+  void _handlePublish(BuildContext context, bool isVideo) {
+    if (nameController.text.isEmpty ||
+        descriptionController.text.isEmpty ||
+        selectedMedia.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add media and fill required fields'),
+        ),
+      );
+      return;
+    }
+
+    if (isVideo) {
+      final videoModel = VideoModel(
+        id: '',
+        name: nameController.text,
+        description: descriptionController.text,
+        imageUrl: '',
+        videoUrl: '',
+        cookTime: cookTimeController.text,
+        difficulty: difficultyController.text,
+        category: categoryController.text,
+        ingredients: ingredientsController.text,
+        steps: stepsController.text,
+        calories: caloriesController.text,
+      );
+      context.read<FeedBloc>().add(
+        FeedVideoEvent(videoModel: videoModel, mediaFiles: selectedMedia),
+      );
+    } else {
+      final recipeModel = RecipeModel(
+        id: '',
+        name: nameController.text,
+        categoryId: categoryController.text,
+        description: descriptionController.text,
+        ingredients: ingredientsController.text
+            .split(',')
+            .map((e) => e.trim())
+            .toList(),
+        steps: stepsController.text.split(',').map((e) => e.trim()).toList(),
+        imageUrl: '',
+        time: cookTimeController.text,
+        difficulty: difficultyController.text,
+        calories: caloriesController.text,
+      );
+      context.read<FeedBloc>().add(
+        FeedRecipeEvent(recipeModel: recipeModel, mediaFiles: selectedMedia),
+      );
+    }
+  }
+
+  Widget _buildTab(String text, int index) {
+    final isSelected = selectedIndex == index;
+    final theme = Theme.of(context);
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-        child: AnimatedContainer(
-          padding: EdgeInsets.symmetric(vertical: 10),
+        onTap: () => setState(() => selectedIndex = index),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Color(0xFF1B3A2E) : Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
           ),
-
           alignment: Alignment.center,
-          duration: Duration(microseconds: 200),
           child: Text(
             text,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Color(0xFF1B3A2E),
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.w600,
+              color: isSelected
+                  ? Colors.white
+                  : theme.colorScheme.onSurfaceVariant,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMediaPicker(
+    BuildContext context,
+    bool isVideo,
+    ThemeData theme,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        context.read<FeedBloc>().add(
+          GetMediaEvent(source: [ImageSource.gallery], isVideo: isVideo),
+        );
+      },
+      child: Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: theme.colorScheme.outlineVariant,
+            width: 2,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: selectedMedia.isNotEmpty
+            ? isVideo
+                  ? const Center(
+                      child: Icon(
+                        Icons.video_library,
+                        size: 64,
+                        color: Colors.blueGrey,
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: Image.file(
+                        File(selectedMedia.first.path),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isVideo
+                        ? Icons.videocam_outlined
+                        : Icons.add_photo_alternate_outlined,
+                    size: 48,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    isVideo ? "Upload Video Reel" : "Add Dish Image",
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.outfit(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    int maxLines = 1,
+  }) {
+    final theme = Theme.of(context);
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      style: GoogleFonts.outfit(),
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: theme.colorScheme.primary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        filled: true,
+        fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+        labelStyle: GoogleFonts.outfit(
+          color: theme.colorScheme.onSurfaceVariant,
         ),
       ),
     );

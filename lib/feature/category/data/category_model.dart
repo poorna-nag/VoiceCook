@@ -6,6 +6,6 @@ class CategoryModel {
 
   Map<String, dynamic> toMap() => {
     "imageUrl": imageUrl,
-    "categotyName": categoryName,
+    "categoryName": categoryName,
   };
 }

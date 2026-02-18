@@ -7,15 +7,16 @@ class UserRepoImpl extends UserRepo {
     await Future.delayed(Duration(seconds: 1));
     return UserModel(
       name: "Poorna Nag",
+      email: "poornanag@example.com",
       phoneNum: 'XXXXXX8976',
       age: '26',
       address: 'Mysuru',
-      rateing: '4.1',
+      rating: '4.1',
       gender: 'female',
       foodType: 'Veg and Non-veg',
-      categoty: 'all',
+      category: 'all',
       imageUrl:
-          'https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1287',
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1287',
     );
   }
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:voicecook/feature/auth/presentation/login_screen.dart';
-import 'package:voicecook/feature/auth/presentation/singin_screen.dart';
-import 'package:voicecook/feature/category/presentation/categoty_item_list_screen.dart';
+import 'package:voicecook/feature/auth/presentation/signup_screen.dart';
+import 'package:voicecook/feature/category/presentation/category_item_list_screen.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/presentation/pages/fav_screen.dart';
 import 'package:voicecook/feature/home/presentation/pages/home_screen.dart';
-import 'package:voicecook/feature/recipe_detals/presentation/recipe_home_screen.dart';
-import 'package:voicecook/feature/recipe_detals/presentation/recipe_detail_screen.dart';
+import 'package:voicecook/feature/recipe_details/presentation/recipe_home_screen.dart';
+import 'package:voicecook/feature/recipe_details/presentation/recipe_detail_screen.dart';
 import 'package:voicecook/feature/home/presentation/splash_screen.dart';
 import 'package:voicecook/feature/settings/presentation/settings_screen.dart';
 import 'package:voicecook/feature/user_profile/presentation/add_food_screen.dart';
@@ -62,7 +62,7 @@ class NavigationService {
         final recipes = args?['recipes'] as List<RecipeModel>? ?? [];
 
         return MaterialPageRoute(
-          builder: (_) => CategotyItemListScreen(recipe: recipes),
+          builder: (_) => CategoryItemListScreen(recipe: recipes),
           settings: settings,
         );
       // case '/search':
@@ -75,7 +75,7 @@ class NavigationService {
         final recipes = args?['recipes'] as List<RecipeModel>?;
 
         return MaterialPageRoute(
-          builder: (_) => CategotyItemListScreen(recipe: recipes ?? []),
+          builder: (_) => CategoryItemListScreen(recipe: recipes ?? []),
           settings: settings,
         );
       case AppRoutes.details:
@@ -120,7 +120,7 @@ class NavigationService {
         );
       case AppRoutes.signin:
         return MaterialPageRoute(
-          builder: (context) => SingInScreen(),
+          builder: (context) => SignUpScreen(),
           settings: settings,
         );
       case AppRoutes.login:
@@ -153,7 +153,7 @@ class AppRoutes {
   static const String categoryList = "/categoryList";
   static const String search = "/search";
   static const String profile = "/profile";
-  static const String addInfo = "/instraction";
+  static const String addInfo = "/instruction";
   static const String editprofile = "/editprofile";
   static const String signin = '/signin';
   static const String login = '/login';

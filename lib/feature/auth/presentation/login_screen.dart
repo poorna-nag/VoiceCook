@@ -16,14 +16,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Login")),
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthLoading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is AuthSuccess) {
-            return LoginUi();
-          } else if (state is AuthError) {
-            return Text(state.toString());
+            return const Center(child: CircularProgressIndicator());
           }
           return const LoginUi();
         },
@@ -64,72 +61,75 @@ class _LoginUiState extends State<LoginUi> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("LogIn Here", style: TextStyle(fontSize: 30)),
-              SizedBox(height: 10),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                keyboardType: TextInputType.emailAddress,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Welcome Back",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1B3A2E),
               ),
-              SizedBox(height: 10),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                obscureText: true,
               ),
-              SizedBox(height: 10),
-              BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  return FilledButton(
-                    onPressed: state is AuthLoading
-                        ? null
-                        : () {
-                            if (emailController.text.isEmpty ||
-                                passwordController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Please fill all fields'),
-                                ),
-                              );
-                              return;
-                            }
-                            context.read<AuthBloc>().add(
-                              LogingEvent(
-                                useremail: emailController.text,
-                                passCode: passwordController.text,
-                              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 10),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return FilledButton(
+                  onPressed: state is AuthLoading
+                      ? null
+                      : () {
+                          if (emailController.text.isEmpty ||
+                              passwordController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Please fill all fields')),
                             );
-                          },
-                    child: state is AuthLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text("Login "),
-                  );
-                },
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  NavigationService.pushNamed(routeName: AppRoutes.signin);
-                },
-                child: Text(" Register Here >> "),
-              ),
-            ],
-          ),
+                            return;
+                          }
+                          context.read<AuthBloc>().add(
+                            LoginEvent(
+                              useremail: emailController.text,
+                              passCode: passwordController.text,
+                            ),
+                          );
+                        },
+                  child: state is AuthLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Login "),
+                );
+              },
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                NavigationService.pushNamed(routeName: AppRoutes.signin);
+              },
+              child: Text(" Register Here >> "),
+            ),
+          ],
         ),
       ),
     );

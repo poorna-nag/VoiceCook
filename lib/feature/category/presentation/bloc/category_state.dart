@@ -3,7 +3,7 @@ import 'package:voicecook/feature/home/data/recipe_model.dart';
 
 class CategoryState {}
 
-class CategotyInitState extends CategoryState {}
+class CategoryInitState extends CategoryState {}
 
 class CategoryLoadingState extends CategoryState {}
 

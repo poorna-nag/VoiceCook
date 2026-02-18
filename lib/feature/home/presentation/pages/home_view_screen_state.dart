@@ -25,9 +25,9 @@ class __HomeViewScreenStateState extends State<HomeViewScreenState> {
         } else if (state is HomeLoadedState) {
           return HomeView(recipeModel: state.recipe);
         } else if (state is HomeErrorState) {
-          return Text("Error : ${state.error}");
+          return Center(child: Text("Error : ${state.error}"));
         }
-        return SizedBox.shrink();
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -53,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
             "Embark on Your\nCooking Journey",
             style: GoogleFonts.playfairDisplay(
               color: const Color(0xFF1B3A2E),
-              fontSize: 38,
+              fontSize: 34,
               fontWeight: FontWeight.w700,
               height: 1.2,
               letterSpacing: 0.9,
@@ -63,10 +63,14 @@ class _HomeViewState extends State<HomeView> {
           TextField(
             decoration: InputDecoration(
               hintText: "Search recipes...",
-              prefixIcon: const Icon(Icons.search),
+              prefixIcon: const Icon(Icons.search, color: Color(0xFF1B3A2E)),
+              filled: true,
+              fillColor: Colors.grey[100],
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
               ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
             onChanged: (value) {
               if (value.isEmpty) {
@@ -76,14 +80,13 @@ class _HomeViewState extends State<HomeView> {
               }
             },
           ),
-          SizedBox(height: 5),
-          Container(
-            color: Colors.amber,
-            height: 220,
+          const SizedBox(height: 15),
+          SizedBox(
+            height: 140,
             width: double.infinity,
-
-            child: CategoryScreen(),
+            child: const CategoryScreen(),
           ),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
