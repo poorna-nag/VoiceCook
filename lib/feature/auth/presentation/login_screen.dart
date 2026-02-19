@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:voicecook/core/constants/app_strings.dart';
 import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/auth/presentation/bloc/auth_bloc.dart';
 import 'package:voicecook/feature/auth/presentation/bloc/auth_event.dart';
@@ -36,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message ?? 'An error occurred'),
+                content: Text(state.message ?? AppStrings.errorOccurred),
                 backgroundColor: theme.colorScheme.error,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -67,14 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.restaurant_menu,
-                      size: 80,
-                      color: Colors.white,
-                    ),
+                    Lottie.asset('assets/chef.json', height: 120, width: 120),
                     const SizedBox(height: 20),
                     Text(
-                      "VoiceCook",
+                      AppStrings.appName,
                       style: GoogleFonts.outfit(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -84,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Your Personal Kitchen Guide",
+                      AppStrings.kitchenGuide,
                       style: GoogleFonts.outfit(
                         fontSize: 16,
                         color: Colors.white.withOpacity(0.9),
@@ -101,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Welcome Back",
+                      AppStrings.welcomeBack,
                       style: GoogleFonts.outfit(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -110,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Enter your credentials to continue",
+                      AppStrings.enterCredentials,
                       style: GoogleFonts.outfit(
                         fontSize: 16,
                         color: Colors.grey[600],
@@ -119,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 32),
                     _buildTextField(
                       controller: emailController,
-                      label: "Email",
+                      label: AppStrings.email,
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       theme: theme,
@@ -127,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
                     _buildTextField(
                       controller: passwordController,
-                      label: "Password",
+                      label: AppStrings.password,
                       icon: Icons.lock_outline,
                       obscureText: obscurePassword,
                       theme: theme,
@@ -148,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextButton(
                         onPressed: () {},
                         child: Text(
-                          "Forgot Password?",
+                          AppStrings.forgotPassword,
                           style: GoogleFonts.outfit(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w600,
@@ -182,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   )
                                 : Text(
-                                    "Login",
+                                    AppStrings.login,
                                     style: GoogleFonts.outfit(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -207,9 +205,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 16,
                             ),
                             children: [
-                              const TextSpan(text: "Don't have an account? "),
+                              const TextSpan(text: AppStrings.dontHaveAccount),
                               TextSpan(
-                                text: "Register",
+                                text: AppStrings.register,
                                 style: TextStyle(
                                   color: theme.colorScheme.primary,
                                   fontWeight: FontWeight.bold,
@@ -233,9 +231,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin() {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(AppStrings.pleaseFillFields)),
+      );
       return;
     }
     context.read<AuthBloc>().add(

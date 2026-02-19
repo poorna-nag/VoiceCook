@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:voicecook/core/constants/app_colors.dart';
 import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/auth/data/repo/auth_repo_impl.dart';
 import 'package:voicecook/feature/auth/presentation/bloc/auth_bloc.dart';
@@ -32,7 +33,7 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => VideoBloc()),
       ],
       child: MaterialApp(
-        theme: ThemeData(colorSchemeSeed: const Color(0xFF1B3A2E)),
+        theme: ThemeData(colorSchemeSeed: AppColors.primary),
         debugShowCheckedModeBanner: false,
         navigatorKey: NavigationService.navigatorKey,
         onGenerateRoute: NavigationService.onGenerateRoute,

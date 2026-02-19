@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voicecook/core/constants/app_colors.dart';
+import 'package:voicecook/core/constants/app_strings.dart';
 import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/user_profile/data/user_model.dart';
 import 'package:voicecook/feature/user_profile/presentation/bloc/user_bloc.dart';
@@ -15,22 +17,22 @@ class UserProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Profile",
+          AppStrings.profile,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: AppColors.white,
           ),
         ),
         centerTitle: false,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: AppColors.white),
         actions: [
           IconButton(
             onPressed: () {
               NavigationService.pushNamed(routeName: AppRoutes.settings);
             },
-            icon: const Icon(Icons.settings, color: Colors.white),
+            icon: const Icon(Icons.settings, color: AppColors.white),
           ),
         ],
       ),
@@ -99,7 +101,7 @@ class UserProfile extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: AppColors.black.withOpacity(0.1),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -170,7 +172,7 @@ class UserProfile extends StatelessWidget {
                       context.read<UserBloc>().add(EditProfileEvent());
                     },
                     icon: const Icon(Icons.edit_outlined),
-                    label: const Text("Edit Profile"),
+                    label: const Text(AppStrings.editProfile),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
@@ -206,7 +208,7 @@ class UserProfile extends StatelessWidget {
                 context.read<UserBloc>().add(AddFoodInfoEvent());
               },
               icon: const Icon(Icons.menu_book),
-              label: const Text("Recipe Instructions"),
+              label: const Text(AppStrings.recipeInstructions),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 56),
                 shape: RoundedRectangleBorder(
@@ -228,7 +230,7 @@ class UserProfile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Account Details",
+            AppStrings.accountDetails,
             style: GoogleFonts.outfit(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -237,30 +239,40 @@ class UserProfile extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _buildInfoCard(context, [
-            _buildInfoRow(context, Icons.person_outline, "Gender", user.gender),
+            _buildInfoRow(
+              context,
+              Icons.person_outline,
+              AppStrings.gender,
+              user.gender,
+            ),
             _buildInfoRow(
               context,
               Icons.calendar_today_outlined,
-              "Age",
+              AppStrings.age,
               user.age,
             ),
-            _buildInfoRow(context, Icons.star_outline, "Rating", user.rating),
+            _buildInfoRow(
+              context,
+              Icons.star_outline,
+              AppStrings.rating,
+              user.rating,
+            ),
             _buildInfoRow(
               context,
               Icons.restaurant_outlined,
-              "Food Preference",
+              AppStrings.foodPreference,
               user.foodType,
             ),
             _buildInfoRow(
               context,
               Icons.location_on_outlined,
-              "Address",
+              AppStrings.address,
               user.address,
             ),
             _buildInfoRow(
               context,
               Icons.phone_outlined,
-              "Phone",
+              AppStrings.phone,
               user.phoneNum,
             ),
           ]),

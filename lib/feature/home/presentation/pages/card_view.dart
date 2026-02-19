@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voicecook/core/constants/app_colors.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_event.dart';
@@ -58,7 +59,7 @@ class _CardViewState extends State<CardView> {
                         child: IconButton(
                           icon: Icon(
                             Icons.favorite,
-                            color: isFav ? Colors.red : Colors.white,
+                            color: isFav ? AppColors.red : AppColors.white,
 
                             size: 28,
                           ),
@@ -91,7 +92,7 @@ class _CardViewState extends State<CardView> {
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
                       item.description,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                      style: TextStyle(color: AppColors.grey600, fontSize: 13),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

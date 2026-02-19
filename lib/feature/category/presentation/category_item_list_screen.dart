@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voicecook/core/constants/app_colors.dart';
+import 'package:voicecook/core/constants/app_strings.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_event.dart';
@@ -14,14 +16,14 @@ class CategoryItemListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Category Recipes',
+          AppStrings.categoryRecipes,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFF1B3A2E),
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: AppColors.primary,
+        iconTheme: const IconThemeData(color: AppColors.white),
         elevation: 0,
       ),
       body: Padding(
@@ -70,7 +72,7 @@ class CategoryItemListScreen extends StatelessWidget {
                                 child: IconButton(
                                   icon: const Icon(
                                     Icons.favorite,
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                     size: 28,
                                   ),
                                   onPressed: () {
@@ -106,7 +108,7 @@ class CategoryItemListScreen extends StatelessWidget {
                             child: Text(
                               item.description,
                               style: TextStyle(
-                                color: Colors.grey[600],
+                                color: AppColors.grey600,
                                 fontSize: 13,
                               ),
                               maxLines: 1,

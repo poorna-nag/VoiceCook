@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voicecook/core/constants/app_colors.dart';
+import 'package:voicecook/core/constants/app_strings.dart';
 import 'package:voicecook/feature/category/presentation/category_screen.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart' show RecipeModel;
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
@@ -50,7 +52,7 @@ class _HomeViewState extends State<HomeView> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "Embark on Your\nCooking Journey",
+            AppStrings.cookingJourney,
             style: GoogleFonts.playfairDisplay(
               color: const Color(0xFF1B3A2E),
               fontSize: 34,
@@ -62,8 +64,8 @@ class _HomeViewState extends State<HomeView> {
           SizedBox(height: 9),
           TextField(
             decoration: InputDecoration(
-              hintText: "Search recipes...",
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF1B3A2E)),
+              hintText: AppStrings.searchRecipes,
+              prefixIcon: const Icon(Icons.search, color: AppColors.primary),
               filled: true,
               fillColor: Colors.grey[100],
               border: OutlineInputBorder(
@@ -91,11 +93,11 @@ class _HomeViewState extends State<HomeView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Need to try",
+                AppStrings.needToTry,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1B3A2E),
+                  color: AppColors.primary,
                 ),
               ),
               TextButton(
@@ -105,9 +107,9 @@ class _HomeViewState extends State<HomeView> {
                   );
                 },
                 child: const Text(
-                  "See all →",
+                  AppStrings.seeAllArrow,
                   style: TextStyle(
-                    color: Color(0xFF1B3A2E),
+                    color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

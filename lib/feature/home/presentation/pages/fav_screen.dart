@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voicecook/core/constants/app_colors.dart';
+import 'package:voicecook/core/constants/app_strings.dart';
 import 'package:voicecook/feature/home/data/recipe_model.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_event.dart';
@@ -11,9 +13,9 @@ class FavScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Favorite Recipes')),
+      appBar: AppBar(title: const Text(AppStrings.favoriteRecipes)),
       body: favItems.isEmpty
-          ? const Center(child: Text('No favorites yet!'))
+          ? const Center(child: Text(AppStrings.noFavoritesYet))
           : Column(
               children: [
                 Expanded(
@@ -58,7 +60,7 @@ class FavScreen extends StatelessWidget {
                                     child: IconButton(
                                       icon: const Icon(
                                         Icons.delete,
-                                        color: Colors.white,
+                                        color: AppColors.white,
                                         size: 28,
                                       ),
                                       onPressed: () {},
