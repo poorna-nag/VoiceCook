@@ -7,6 +7,7 @@ import 'package:voicecook/feature/home/presentation/pages/fav_screen.dart';
 import 'package:voicecook/feature/home/presentation/pages/home_screen.dart';
 import 'package:voicecook/feature/recipe_details/presentation/recipe_home_screen.dart';
 import 'package:voicecook/feature/recipe_details/presentation/recipe_detail_screen.dart';
+import 'package:voicecook/feature/recipe_details/presentation/cook_mode_screen.dart';
 import 'package:voicecook/feature/home/presentation/splash_screen.dart';
 import 'package:voicecook/feature/settings/presentation/settings_screen.dart';
 import 'package:voicecook/feature/user_profile/presentation/add_food_screen.dart';
@@ -134,6 +135,15 @@ class NavigationService {
           settings: settings,
         );
 
+      case AppRoutes.cookMode:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final recipe = args?['recipe'] as RecipeModel;
+
+        return MaterialPageRoute(
+          builder: (context) => CookModeScreen(recipe: recipe),
+          settings: settings,
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),
@@ -158,4 +168,5 @@ class AppRoutes {
   static const String signup = '/signup';
   static const String login = '/login';
   static const String settings = '/settings';
+  static const String cookMode = '/cookMode';
 }

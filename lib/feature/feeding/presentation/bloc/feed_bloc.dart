@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:voicecook/core/navigation_service.dart';
@@ -32,7 +33,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           medias = [video];
         }
       } else {
-        medias = await picker.pickMultipleMedia(imageQuality: 85);
+        if (event.source.length == 1 &&
+            event.source.first == ImageSource.camera) {
+          final image = await picker.pickImage(source: ImageSource.camera);
+          if (image != null) {
+            medias = [image];
+          }
+        } else {
+          medias = await picker.pickMultipleMedia(imageQuality: 85);
+        }
       }
 
       if (medias.isNotEmpty) {
@@ -60,6 +69,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       final updatedVideoModel = event.videoModel.copyWith(
         videoUrl: mediaUrl,
         imageUrl: '', // For now
+        userId: FirebaseAuth.instance.currentUser?.uid,
       );
 
       await repo.addVideo(updatedVideoModel);
@@ -95,6 +105,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         time: event.recipeModel.time,
         difficulty: event.recipeModel.difficulty,
         calories: event.recipeModel.calories,
+        userId: FirebaseAuth.instance.currentUser?.uid,
       );
 
       await repo.addRecipe(updatedRecipe);

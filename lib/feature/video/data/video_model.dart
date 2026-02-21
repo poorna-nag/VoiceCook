@@ -10,6 +10,7 @@ class VideoModel {
   final String ingredients;
   final String steps;
   final String calories;
+  final String? userId;
 
   VideoModel({
     required this.id,
@@ -23,6 +24,7 @@ class VideoModel {
     required this.ingredients,
     required this.steps,
     required this.calories,
+    this.userId,
   });
   factory VideoModel.fromJson(Map<String, dynamic> data, String id) {
     return VideoModel(
@@ -37,6 +39,7 @@ class VideoModel {
       ingredients: data['ingredients'] ?? '',
       steps: data['steps'] ?? '',
       calories: data['calories']?.toString() ?? '0',
+      userId: data['userId'],
     );
   }
   Map<String, dynamic> toFirestore() {
@@ -51,6 +54,7 @@ class VideoModel {
       'ingredients': ingredients,
       'steps': steps,
       'calories': calories,
+      'userId': userId,
     };
   }
 
@@ -66,6 +70,7 @@ class VideoModel {
     String? ingredients,
     String? steps,
     String? calories,
+    String? userId,
   }) {
     return VideoModel(
       id: id ?? this.id,
@@ -79,6 +84,7 @@ class VideoModel {
       ingredients: ingredients ?? this.ingredients,
       steps: steps ?? this.steps,
       calories: calories ?? this.calories,
+      userId: userId ?? this.userId,
     );
   }
 }

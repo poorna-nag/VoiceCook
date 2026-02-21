@@ -19,9 +19,29 @@ class FeedRepoImpl extends FeedRepo {
     await firestore.collection('recipes').add(recipe.toJson());
   }
 
+  Future<List<VideoModel>> getUserVideos(String userId) async {
+    final snapshot = await firestore
+        .collection('videos')
+        .where('userId', isEqualTo: userId)
+        .get();
+    return snapshot.docs
+        .map((doc) => VideoModel.fromJson(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<RecipeModel>> getUserRecipes(String userId) async {
+    final snapshot = await firestore
+        .collection('recipes')
+        .where('userId', isEqualTo: userId)
+        .get();
+    return snapshot.docs
+        .map((doc) => RecipeModel.fromJson(doc.data(), doc.id))
+        .toList();
+  }
+
   Future<String> uploadMedia(File file, String fileName) async {
     try {
-      final ref = storage.ref().child('videos/$fileName');
+      final ref = storage.ref().child(fileName);
       final uploadTask = ref.putFile(file);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();

@@ -35,6 +35,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final recipes = await _repo.getRecipe();
 
+      final prefs = await SharedPreferences.getInstance();
+      final savedList = prefs.getStringList(_savedKey) ?? [];
+      final savedIds = savedList.map((e) => jsonDecode(e)['id']).toSet();
+
+      for (var r in recipes) {
+        if (savedIds.contains(r.id)) {
+          r.isFavorite = true;
+        }
+      }
+
       allRecipes = recipes;
       emit(HomeLoadedState(recipe: recipes));
     } catch (e) {
@@ -81,11 +91,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       if (savedList.any((r) => jsonDecode(r)['id'] == event.recipe.id)) {
         savedList.removeWhere((r) => jsonDecode(r)['id'] == event.recipe.id);
+        event.recipe.isFavorite = false;
       } else {
         savedList.add(recipeJson);
+        event.recipe.isFavorite = true;
       }
 
       await prefs.setStringList(_savedKey, savedList);
+
+      // Update local allRecipes to reflect the change
+      final index = allRecipes.indexWhere((r) => r.id == event.recipe.id);
+      if (index != -1) {
+        allRecipes[index].isFavorite = event.recipe.isFavorite;
+      }
+
+      emit(HomeLoadedState(recipe: List.from(allRecipes)));
     } catch (e) {
       emit(HomeErrorState(error: e.toString()));
     }
@@ -161,5 +181,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   FutureOr<void> _onDeleteFavEvent(
     DeleteFavEvent event,
     Emitter<HomeState> emit,
-  ) {}
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedList = prefs.getStringList(_savedKey) ?? [];
+
+      savedList.removeWhere((r) => jsonDecode(r)['id'] == event.recipe.id);
+      await prefs.setStringList(_savedKey, savedList);
+
+      // Update local allRecipes if present
+      final index = allRecipes.indexWhere((r) => r.id == event.recipe.id);
+      if (index != -1) {
+        allRecipes[index].isFavorite = false;
+      }
+
+      // Emit loaded state for the favorites screen specifically
+      final savedRecipes = savedList
+          .map((e) => RecipeModel.fromJson(jsonDecode(e)))
+          .toList();
+      emit(FavoriteLoadedState(recipes: savedRecipes));
+    } catch (e) {
+      emit(HomeErrorState(error: e.toString()));
+    }
+  }
 }

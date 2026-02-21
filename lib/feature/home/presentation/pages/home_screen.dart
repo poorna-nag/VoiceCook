@@ -8,6 +8,9 @@ import 'package:voicecook/feature/feeding/feed_screen.dart' show FeedScreen;
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_event.dart';
 import 'package:voicecook/feature/home/presentation/pages/home_view_screen_state.dart';
+import 'package:voicecook/feature/user_profile/presentation/bloc/user_bloc.dart';
+import 'package:voicecook/feature/user_profile/presentation/bloc/user_event.dart';
+import 'package:voicecook/feature/user_profile/presentation/bloc/user_state.dart';
 import 'package:voicecook/feature/video/presentation/video_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,15 +49,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   icon: const Icon(Icons.favorite, color: AppColors.white),
                 ),
-                IconButton(
-                  onPressed: () {
-                    if (FirebaseAuth.instance.currentUser == null) {
-                      NavigationService.pushNamed(routeName: AppRoutes.login);
-                    } else {
-                      NavigationService.pushNamed(routeName: AppRoutes.profile);
-                    }
-                  },
-                  icon: const Icon(Icons.person, color: AppColors.white),
+                BlocProvider(
+                  create: (context) => UserBloc()..add(GetUserEvent()),
+                  child: BlocBuilder<UserBloc, UserState>(
+                    builder: (context, state) {
+                      String? imageUrl;
+                      if (state is UserLoadedState) {
+                        imageUrl = state.user.imageUrl;
+                      }
+
+                      return IconButton(
+                        onPressed: () {
+                          if (FirebaseAuth.instance.currentUser == null) {
+                            NavigationService.pushNamed(
+                              routeName: AppRoutes.login,
+                            );
+                          } else {
+                            NavigationService.pushNamed(
+                              routeName: AppRoutes.profile,
+                            );
+                          }
+                        },
+                        icon: imageUrl != null && imageUrl.isNotEmpty
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColors.white,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 14,
+                                  backgroundImage: NetworkImage(imageUrl),
+                                ),
+                              )
+                            : const Icon(Icons.person, color: AppColors.white),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

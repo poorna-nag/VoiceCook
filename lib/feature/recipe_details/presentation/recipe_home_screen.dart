@@ -146,7 +146,13 @@ class _RecipeHomeScreenState extends State<RecipeHomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/cookMode',
+                                arguments: {'recipe': widget.recipeModel},
+                              );
+                            },
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),

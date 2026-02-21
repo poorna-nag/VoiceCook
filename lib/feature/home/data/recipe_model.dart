@@ -9,6 +9,7 @@ class RecipeModel {
   final String? time;
   final String? difficulty;
   final String? calories;
+  final String? userId;
   bool isFavorite;
 
   RecipeModel({
@@ -22,6 +23,7 @@ class RecipeModel {
     this.time,
     this.difficulty,
     this.calories,
+    this.userId,
     this.isFavorite = false,
   });
 
@@ -36,18 +38,21 @@ class RecipeModel {
     'time': time,
     'difficulty': difficulty,
     'calories': calories,
+    'userId': userId,
   };
 
-  factory RecipeModel.fromJson(Map<String, dynamic> json) => RecipeModel(
-    id: json['id'] ?? '',
-    name: json['name'] ?? '',
-    categoryId: json['categoryId'] ?? '',
-    description: json['description'] ?? '',
-    ingredients: List<String>.from(json['ingredients'] ?? []),
-    steps: List<String>.from(json['steps'] ?? []),
-    imageUrl: json['imageUrl'] ?? '',
-    time: json['time'],
-    difficulty: json['difficulty'],
-    calories: json['calories'],
-  );
+  factory RecipeModel.fromJson(Map<String, dynamic> json, [String? id]) =>
+      RecipeModel(
+        id: id ?? json['id'] ?? '',
+        name: json['name'] ?? '',
+        categoryId: json['categoryId'] ?? '',
+        description: json['description'] ?? '',
+        ingredients: List<String>.from(json['ingredients'] ?? []),
+        steps: List<String>.from(json['steps'] ?? []),
+        imageUrl: json['imageUrl'] ?? '',
+        time: json['time'],
+        difficulty: json['difficulty'],
+        calories: json['calories'],
+        userId: json['userId'],
+      );
 }

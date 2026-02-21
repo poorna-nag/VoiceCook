@@ -4,11 +4,6 @@ class HomeEvent {}
 
 class GetRecipeEvent extends HomeEvent {}
 
-class ToggleFavoriteEvent extends HomeEvent {
-  final RecipeModel recipe;
-  ToggleFavoriteEvent({required this.recipe});
-}
-
 class NavToHomeEvent extends HomeEvent {}
 
 class NavToSeeMoreEvent extends HomeEvent {
@@ -39,8 +34,9 @@ class NavToFavScreenEvent extends HomeEvent {}
 
 class NavToSearchEvent extends HomeEvent {}
 
-class DeleteFavEvent extends HomeEvent {}
+class DeleteFavEvent extends HomeEvent {
+  final RecipeModel recipe;
+  DeleteFavEvent({required this.recipe});
+}
 
 class NavToProfileEvent extends HomeEvent {}
-
-class DeleteFavItemEvent extends HomeEvent {}

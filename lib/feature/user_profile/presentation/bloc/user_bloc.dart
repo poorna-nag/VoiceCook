@@ -8,8 +8,15 @@ import 'package:voicecook/feature/user_profile/data/repo/user_repo_impl.dart';
 import 'package:voicecook/feature/user_profile/presentation/bloc/user_event.dart';
 import 'package:voicecook/feature/user_profile/presentation/bloc/user_state.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:voicecook/feature/feeding/data/repo/feed_repo_impl.dart';
+import 'package:voicecook/feature/home/data/recipe_model.dart';
+import 'package:voicecook/feature/video/data/video_model.dart';
+
 class UserBloc extends Bloc<UserEvent, UserState> {
   final ImagePicker picker = ImagePicker();
+  final FeedRepoImpl feedRepo = FeedRepoImpl();
+
   UserBloc() : super(UserInitState()) {
     on<GetUserEvent>(_onGetUserEvent);
     on<UploadPhotoEvent>(_onUploadPhotoEvent);
@@ -24,8 +31,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async {
     emit(UserLoadingState());
     try {
-      final repo = await UserRepoImpl().getUser();
-      emit(UserLoadedState(user: repo));
+      final userModel = await UserRepoImpl().getUser();
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+
+      List<RecipeModel> recipes = [];
+      List<VideoModel> videos = [];
+
+      if (userId != null) {
+        recipes = await feedRepo.getUserRecipes(userId);
+        videos = await feedRepo.getUserVideos(userId);
+      }
+
+      emit(UserLoadedState(user: userModel, recipes: recipes, videos: videos));
     } catch (e) {
       emit(UserErrorState(error: e.toString()));
     }

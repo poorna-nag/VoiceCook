@@ -10,6 +10,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this.repo) : super(AuthInitial()) {
     on<SignUpEvent>(_onSignUp);
     on<LoginEvent>(_onLogin);
+    on<LogoutEvent>(_onLogout);
   }
 
   Future<void> _onSignUp(SignUpEvent event, Emitter<AuthState> emit) async {
@@ -43,6 +44,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           ),
         );
       }
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
+    try {
+      await repo.logOut();
+      NavigationService.pushReplacementNamed(routeName: AppRoutes.home);
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }

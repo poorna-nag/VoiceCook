@@ -44,217 +44,224 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isVideo = selectedIndex == 0;
-
     return BlocProvider(
       create: (context) => FeedBloc(FeedInitState()),
-      child: BlocListener<FeedBloc, FeedState>(
-        listener: (context, state) {
-          if (state is GetMediaState) {
-            setState(() {
-              selectedMedia = state.medias;
-            });
-          } else if (state is FeedSuccessState) {
-            _clearControllers();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: theme.colorScheme.primary,
-              ),
-            );
-          } else if (state is FeedErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: theme.colorScheme.error,
-              ),
-            );
-          }
-        },
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      theme.colorScheme.primary,
-                      theme.colorScheme.primaryContainer,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+      child: Builder(
+        builder: (context) {
+          final theme = Theme.of(context);
+          final isVideo = selectedIndex == 0;
+
+          return BlocListener<FeedBloc, FeedState>(
+            listener: (context, state) {
+              if (state is GetMediaState) {
+                setState(() {
+                  selectedMedia = state.medias;
+                });
+              } else if (state is FeedSuccessState) {
+                _clearControllers();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: theme.colorScheme.primary,
                   ),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
+                );
+              } else if (state is FeedErrorState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error),
+                    backgroundColor: theme.colorScheme.error,
                   ),
-                ),
-                padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Create Content",
-                      style: GoogleFonts.outfit(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Share your culinary magic with the world",
-                      style: GoogleFonts.outfit(
-                        fontSize: 16,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant.withOpacity(
-                          0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        children: [
-                          _buildTab("Video Reel", 0),
-                          const SizedBox(width: 8),
-                          _buildTab("Recipe Post", 1),
+                );
+              }
+            },
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary,
+                          theme.colorScheme.primaryContainer,
                         ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(32),
+                        bottomRight: Radius.circular(32),
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    _buildMediaPicker(context, isVideo, theme),
-                    const SizedBox(height: 32),
-                    _buildSectionTitle("General Information"),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      nameController,
-                      "Dish Name",
-                      Icons.restaurant_menu,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      descriptionController,
-                      "Description",
-                      Icons.description_outlined,
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
+                    padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: _buildTextField(
-                            cookTimeController,
-                            "Cook Time",
-                            Icons.timer_outlined,
+                        Text(
+                          "Create Content",
+                          style: GoogleFonts.outfit(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                            difficultyController,
-                            "Difficulty",
-                            Icons.speed,
+                        const SizedBox(height: 8),
+                        Text(
+                          "Share your culinary magic with the world",
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            color: Colors.white.withOpacity(0.8),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Row(
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: _buildTextField(
-                            categoryController,
-                            "Category",
-                            Icons.category_outlined,
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceContainerHighest
+                                .withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              _buildTab("Video Reel", 0),
+                              const SizedBox(width: 8),
+                              _buildTab("Recipe Post", 1),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                            caloriesController,
-                            "Calories",
-                            Icons.local_fire_department_outlined,
-                          ),
+                        const SizedBox(height: 32),
+                        _buildMediaPicker(context, isVideo, theme),
+                        const SizedBox(height: 32),
+                        _buildSectionTitle("General Information"),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          nameController,
+                          "Dish Name",
+                          Icons.restaurant_menu,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildSectionTitle("Preparation Details"),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      ingredientsController,
-                      "Ingredients (Comma separated)",
-                      Icons.list_alt,
-                      maxLines: 4,
-                    ),
-                    if (!isVideo) ...[
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        stepsController,
-                        "Steps (Comma separated)",
-                        Icons.format_list_numbered,
-                        maxLines: 6,
-                      ),
-                    ],
-                    const SizedBox(height: 48),
-                    BlocBuilder<FeedBloc, FeedState>(
-                      builder: (context, state) {
-                        return SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: state is FeedLoadingState
-                                ? null
-                                : () => _handlePublish(context, isVideo),
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          descriptionController,
+                          "Description",
+                          Icons.description_outlined,
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                cookTimeController,
+                                "Cook Time",
+                                Icons.timer_outlined,
                               ),
-                              elevation: 4,
                             ),
-                            child: state is FeedLoadingState
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : Text(
-                                    isVideo ? "Publish Reel" : "Post Recipe",
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildTextField(
+                                difficultyController,
+                                "Difficulty",
+                                Icons.speed,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                categoryController,
+                                "Category",
+                                Icons.category_outlined,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildTextField(
+                                caloriesController,
+                                "Calories",
+                                Icons.local_fire_department_outlined,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        _buildSectionTitle("Preparation Details"),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          ingredientsController,
+                          "Ingredients (Comma separated)",
+                          Icons.list_alt,
+                          maxLines: 4,
+                        ),
+                        if (!isVideo) ...[
+                          const SizedBox(height: 16),
+                          _buildTextField(
+                            stepsController,
+                            "Steps (Comma separated)",
+                            Icons.format_list_numbered,
+                            maxLines: 6,
                           ),
-                        );
-                      },
+                        ],
+                        const SizedBox(height: 48),
+                        BlocBuilder<FeedBloc, FeedState>(
+                          builder: (context, state) {
+                            return SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                onPressed: state is FeedLoadingState
+                                    ? null
+                                    : () => _handlePublish(context, isVideo),
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 20,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 4,
+                                ),
+                                child: state is FeedLoadingState
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        isVideo
+                                            ? "Publish Reel"
+                                            : "Post Recipe",
+                                        style: GoogleFonts.outfit(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 40),
+                      ],
                     ),
-                    const SizedBox(height: 40),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -358,8 +365,62 @@ class _FeedScreenState extends State<FeedScreen> {
   ) {
     return GestureDetector(
       onTap: () {
-        context.read<FeedBloc>().add(
-          GetMediaEvent(source: [ImageSource.gallery], isVideo: isVideo),
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          builder: (bottomSheetContext) => Container(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isVideo ? "Record or Select Video" : "Take or Select Photo",
+                  style: GoogleFonts.outfit(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildPickerOption(
+                      context,
+                      icon: Icons.photo_library_outlined,
+                      label: "Gallery",
+                      onTap: () {
+                        Navigator.pop(bottomSheetContext);
+                        context.read<FeedBloc>().add(
+                          GetMediaEvent(
+                            source: [ImageSource.gallery],
+                            isVideo: isVideo,
+                          ),
+                        );
+                      },
+                    ),
+                    _buildPickerOption(
+                      context,
+                      icon: isVideo
+                          ? Icons.videocam_outlined
+                          : Icons.camera_alt_outlined,
+                      label: isVideo ? "Record" : "Camera",
+                      onTap: () {
+                        Navigator.pop(bottomSheetContext);
+                        context.read<FeedBloc>().add(
+                          GetMediaEvent(
+                            source: [ImageSource.camera],
+                            isVideo: isVideo,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
       child: Container(
@@ -402,7 +463,9 @@ class _FeedScreenState extends State<FeedScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    isVideo ? "Upload Video Reel" : "Add Dish Image",
+                    isVideo
+                        ? "Upload or Record Video"
+                        : "Add or Take Dish Image",
                     style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.primary,
@@ -410,6 +473,38 @@ class _FeedScreenState extends State<FeedScreen> {
                   ),
                 ],
               ),
+      ),
+    );
+  }
+
+  Widget _buildPickerOption(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 32),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+        ],
       ),
     );
   }

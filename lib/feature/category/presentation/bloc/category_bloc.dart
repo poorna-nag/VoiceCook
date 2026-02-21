@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voicecook/core/navigation_service.dart';
@@ -32,6 +35,16 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     List<RecipeModel> allRecipes = await RecipeRepoImpl().getRecipe();
+
+    final prefs = await SharedPreferences.getInstance();
+    final savedList = prefs.getStringList('saved_recipes') ?? [];
+    final savedIds = savedList.map((e) => jsonDecode(e)['id']).toSet();
+
+    for (var r in allRecipes) {
+      if (savedIds.contains(r.id)) {
+        r.isFavorite = true;
+      }
+    }
 
     final filtered = allRecipes
         .where(
