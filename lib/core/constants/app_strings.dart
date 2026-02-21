@@ -14,6 +14,7 @@ class AppStrings {
   // Favorite Screen
   static const String favoriteRecipes = 'Favorite Recipes';
   static const String noFavoritesYet = 'No favorites yet!';
+  static const String favorites = 'Favorites';
 
   // Category
   static const String categories = 'Categories';

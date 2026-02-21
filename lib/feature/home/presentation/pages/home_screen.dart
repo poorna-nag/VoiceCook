@@ -1,16 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voicecook/core/constants/app_colors.dart';
 import 'package:voicecook/core/constants/app_strings.dart';
-import 'package:voicecook/core/navigation_service.dart';
 import 'package:voicecook/feature/feeding/feed_screen.dart' show FeedScreen;
 import 'package:voicecook/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:voicecook/feature/home/presentation/bloc/home_event.dart';
+import 'package:voicecook/feature/home/presentation/pages/fav_screen.dart';
 import 'package:voicecook/feature/home/presentation/pages/home_view_screen_state.dart';
-import 'package:voicecook/feature/user_profile/presentation/bloc/user_bloc.dart';
-import 'package:voicecook/feature/user_profile/presentation/bloc/user_event.dart';
-import 'package:voicecook/feature/user_profile/presentation/bloc/user_state.dart';
 import 'package:voicecook/feature/video/presentation/video_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +18,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
-  List<Widget> page = [HomeViewScreenState(), FeedScreen(), VideoScreen()];
+  List<Widget> page = [
+    HomeViewScreenState(),
+    FavScreen(favItems: []),
+    FeedScreen(),
+    VideoScreen(),
+  ];
   @override
   void initState() {
     super.initState();
@@ -32,84 +33,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: selectedIndex == 2
-          ? null
-          : AppBar(
-              title: const Text(
-                AppStrings.appName,
-                style: TextStyle(color: AppColors.white),
-              ),
-              backgroundColor: AppColors.primary,
-              automaticallyImplyLeading: false,
-              centerTitle: false,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    context.read<HomeBloc>().add(NavToFavScreenEvent());
-                  },
-                  icon: const Icon(Icons.favorite, color: AppColors.white),
-                ),
-                BlocProvider(
-                  create: (context) => UserBloc()..add(GetUserEvent()),
-                  child: BlocBuilder<UserBloc, UserState>(
-                    builder: (context, state) {
-                      String? imageUrl;
-                      if (state is UserLoadedState) {
-                        imageUrl = state.user.imageUrl;
-                      }
-
-                      return IconButton(
-                        onPressed: () {
-                          if (FirebaseAuth.instance.currentUser == null) {
-                            NavigationService.pushNamed(
-                              routeName: AppRoutes.login,
-                            );
-                          } else {
-                            NavigationService.pushNamed(
-                              routeName: AppRoutes.profile,
-                            );
-                          }
-                        },
-                        icon: imageUrl != null && imageUrl.isNotEmpty
-                            ? Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.white,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 14,
-                                  backgroundImage: NetworkImage(imageUrl),
-                                ),
-                              )
-                            : const Icon(Icons.person, color: AppColors.white),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-      extendBody: selectedIndex == 2,
+      appBar: null,
+      extendBody: selectedIndex == 3,
 
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: selectedIndex == 2 ? AppColors.transparent : null,
+          canvasColor: selectedIndex == 3 ? AppColors.transparent : null,
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: selectedIndex,
-          backgroundColor: selectedIndex == 2
+          backgroundColor: selectedIndex == 3
               ? AppColors.black.withOpacity(0.01)
               : null,
-          selectedItemColor: selectedIndex == 2
+          selectedItemColor: selectedIndex == 3
               ? AppColors.white
               : AppColors.primary,
-          unselectedItemColor: selectedIndex == 2
+          unselectedItemColor: selectedIndex == 3
               ? Colors.white70
               : AppColors.grey,
-          elevation: selectedIndex == 2 ? 0 : 8,
+          elevation: selectedIndex == 3 ? 0 : 8,
           onTap: (index) {
             setState(() {
               selectedIndex = index;
@@ -120,6 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
               label: AppStrings.home,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_outline),
+              activeIcon: Icon(Icons.favorite),
+              label: AppStrings.favorites,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add_circle_outline),
